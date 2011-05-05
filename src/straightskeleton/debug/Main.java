@@ -1,5 +1,7 @@
 package straightskeleton.debug;
 
+import javax.swing.JOptionPane;
+
 import straightskeleton.ui.PointEditor;
 
 /**
@@ -39,7 +41,7 @@ public class Main extends javax.swing.JFrame {
 
     /** Creates new form Main */
     public Main() {
-//        JOptionPane.showMessageDialog( rootPane, "left drag -> move corners\nshift-click -> remove corner\ncontrol-click on a line -> add corners");
+        JOptionPane.showMessageDialog( rootPane, "left drag -> move corners\nright-click move view\nshift-left-click -> remove corner\ncontrol-left-click on a line -> add corners");
         initComponents();
 
         WeightedPointEditor pointEditor1 = new WeightedPointEditor();
