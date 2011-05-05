@@ -95,18 +95,11 @@ public class WeightedPointEditor extends PointEditor
 
             WeightedMarker m = (WeightedMarker) pt;
 
-//            m.bar.markers.remove( m );
-
             m.x = location.x; // coordinates to project
             m.y = location.y;
 
             positionMarker( m, m.bar );
 
-//            LContext<Bar> bar = positionMarker( m, m.bar ); // projects down
-//
-//            // update the thing being dragged, so we have the correct line next time
-//            ctx.loop = bar.loop;
-//            ctx.loopable = bar.loopable;
         }
         else
         {
@@ -128,7 +121,6 @@ public class WeightedPointEditor extends PointEditor
             Vector2d dir = new Vector2d (b.end);
             dir.sub(b.start);
             double length = dir.length();
-//            dir.normalize();
             dir.scale( MUtils.clamp( m.val, 0.1, 0.9 ) );
             dir.add(b.start);
             m.set( dir );
