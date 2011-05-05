@@ -12,6 +12,8 @@ import java.util.Map;
 import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector2d;
+
+import straightskeleton.Corner;
 import straightskeleton.Edge;
 import straightskeleton.Machine;
 import straightskeleton.Output;
@@ -194,7 +196,7 @@ public class WeightedPointEditor extends PointEditor
         for (Bar bar : edges.eIterator())
             drawPixel( g2, bar.start );
 
-        final LoopL <Edge> out = new LoopL();
+        
 
 
         /**
@@ -203,6 +205,36 @@ public class WeightedPointEditor extends PointEditor
 
         // controls the gradient of the edge
 
+        final LoopL <Edge> out = new LoopL();
+        Loop<Edge> loop1 = new Loop();
+        out.add(loop1);
+        
+//        Corner 
+//        	c1 = new Corner ( 0,0), 
+//        	c2 = new Corner (100,-100 ), 
+//        	c3 = new Corner (100,0 );
+//        
+//        Machine directionMachine = new Machine ();
+//        
+//        loop1.append(new Edge ( c1,c2 ) );
+//        loop1.append(new Edge ( c2, c3 ) );
+//        loop1.append(new Edge ( c3, c1 ) );
+//        
+//        for (Edge e : loop1)
+//        	e.machine = directionMachine;
+//        
+//        
+//        Skeleton skel = new Skeleton (out, true);
+//        skel.skeleton();
+//        
+//        for ( Face face : skel.output.faces.values() )
+//        {
+//        	System.out.println("face:");
+//            for (Loop <Point3d> lp3 : face.points)
+//            	for (Point3d pt : lp3)
+//            		System.out.println(pt);
+//        }
+        
         for ( Loop<Bar> lb : edges )
         {
             Loop<Edge> loop = new Loop();
