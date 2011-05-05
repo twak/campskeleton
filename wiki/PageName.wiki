@@ -33,13 +33,3 @@ This example is for the unweighted skeleton. To change this you will want to cre
             		System.out.println(pt);
         }
 }}}
-
-Add your content here.
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
