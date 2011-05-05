@@ -208,7 +208,8 @@ public class WeightedPointEditor extends PointEditor
         final LoopL <Edge> out = new LoopL();
         Loop<Edge> loop1 = new Loop();
         out.add(loop1);
-        
+
+// demo unweighetd code without-the-ui
 //        Corner 
 //        	c1 = new Corner ( 0,0), 
 //        	c2 = new Corner (100,-100 ), 
