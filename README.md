@@ -1,4 +1,4 @@
-weighted straight skeleton implementation in java. applet [here](http://dcs.gla.ac.uk/~tkelly/bits/wss/launch.jnlp) (webstart, binary code, run at your own risk).
+weighted straight skeleton implementation in java.
 
 allows negative weights for offsetting in either direction. implementation of [Felkel's](http://www.dma.fi.upm.es/mabellanas/tfcs/skeleton/html/documentacion/Straight%20Skeletons%20Implementation.pdf) algo with robustness - described [here](http://twak.blogspot.com/2009/05/engineering-weighted-straight-skeleton.html).
 
