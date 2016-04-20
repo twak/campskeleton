@@ -7,9 +7,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import straightskeleton.Output.Face;
 import straightskeleton.ui.DirectionHeightEvent;
 import utils.DHash;
+import utils.Loop;
 import utils.LoopL;
 import utils.ManyManyMap;
 import utils.SetCorrespondence;
@@ -246,7 +248,9 @@ public class OffsetSkeleton<E extends Machine>
 
     public static LoopL<Corner> shrink (LoopL<Edge> in, double dist)
     {
-        OffsetSkeleton<Machine> os = new OffsetSkeleton( in, 100 );
+    	LoopL<Corner> cLoopL = Corner.cornerToEdgeLoopL( in );
+    	
+        OffsetSkeleton<Machine> os = new OffsetSkeleton<Machine>( cLoopL, 100 );
 
         Set<Machine> allMachines = new HashSet();
         for (Edge e : in.eIterator() )
@@ -262,6 +266,8 @@ public class OffsetSkeleton<E extends Machine>
         else
             return res.get( 0 ).shape;
     }
+
+
 
     /**
      * The output of an offset surface only knows about corresponding edges, not corresponding corners. Given
