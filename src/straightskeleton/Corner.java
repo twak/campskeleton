@@ -292,4 +292,25 @@ public class Corner extends Point3d implements Iterable<Corner>
         
         return null;
     }
+    
+	public static LoopL<Corner> cornerToEdgeLoopL(LoopL<Edge> in) {
+		
+		LoopL<Corner> corners = new LoopL();
+		
+         for (Loop<Edge> le : in)
+         {
+             Loop<Corner> lc = new Loop<Corner>();
+             corners.add(lc);
+             for (Edge e : le)
+             {
+                 lc.append( e.start);
+                 e.start.nextL = e;
+                 e.end.prevL = e;
+                 e.start.nextC = e.end;
+                 e.end.prevC = e.start;
+             }
+         }
+         
+         return corners;
+	}
 }

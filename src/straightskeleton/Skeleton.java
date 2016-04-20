@@ -167,22 +167,7 @@ public class Skeleton
      */
     public void setupForEdges (LoopL<Edge> input)
     {
-        LoopL<Corner> corners = new LoopL();
-        for (Loop<Edge> le : input) //input.count()
-        {
-            Loop<Corner> lc = new Loop<Corner>();
-            corners.add(lc);
-            for (Edge e : le)
-            {
-                lc.append( e.start);
-                e.start.nextL = e;
-                e.end.prevL = e;
-                e.start.nextC = e.end;
-                e.end.prevC = e.start;
-            }
-        }
-
-        setup (corners); //corners.count()
+        setup (Corner.cornerToEdgeLoopL( input ));
     }
 
     /**
@@ -257,7 +242,6 @@ public class Skeleton
                     height = he.getHeight();
                     validate();
                 }
-                System.out.println("done at "+he.getHeight());
                 refindFaceEventsIfNeeded();
             }
             catch ( Throwable t )
