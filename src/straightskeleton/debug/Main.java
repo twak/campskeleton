@@ -24,7 +24,7 @@ public class Main extends javax.swing.JFrame {
      *
      * Key classes are:
      *
-     * PointEditor - start reading here - pls note the elgance with which the skeleton is executed on the awt thread ;)
+     * PointEditor - start reading here - pls note the elegance with which the skeleton is executed on the awt thread ;)
      * Skeleton
      * CoSitedCollision
      *
