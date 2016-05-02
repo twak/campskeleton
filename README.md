@@ -9,6 +9,6 @@ allows negative weights for offsetting in either direction. implementation of [F
 requires [jama](http://math.nist.gov/javanumerics/jama/), has a gui interface. [video](http://www.youtube.com/watch?v=2twcln3_7Y8). enjoy.
 
 main class is [straightskeleton/debug/Main.java](http://campskeleton.googlecode.com/svn/trunk/src/straightskeleton/debug/Main.java)
-example of non-use use is https://github.com/twak/campskeleton/blob/wiki/PageName.md
+usage: https://github.com/twak/campskeleton/blob/wiki/PageName.md
 
 i believe i own the license to all code in this release, hasn't been vetted for a while tho, so go carefully.
