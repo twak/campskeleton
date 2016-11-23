@@ -18,10 +18,10 @@ import straightskeleton.Output.SharedEdge;
 import straightskeleton.Skeleton;
 import straightskeleton.SkeletonCapUpdate;
 import straightskeleton.debug.DebugDevice;
-import utils.Cache;
-import utils.DHash;
-import utils.LoopL;
-import utils.SetCorrespondence;
+import org.twak.utils.Cache;
+import org.twak.utils.DHash;
+import org.twak.utils.LoopL;
+import org.twak.utils.SetCorrespondence;
 
 /**
  * Represents a horizontal skeleton edge for a length, followed by an angle change

@@ -11,7 +11,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import straightskeleton.ui.Marker;
 import straightskeleton.ui.Marker.Type;
-import utils.Rainbow;
+import org.twak.utils.Rainbow;
 
 /**
  * "Tags" for output properties

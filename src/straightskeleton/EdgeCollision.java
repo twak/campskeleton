@@ -2,7 +2,7 @@ package straightskeleton;
 
 
 import javax.vecmath.Point3d;
-import utils.LinearForm3D;
+import org.twak.utils.LinearForm3D;
 
 /**
  *

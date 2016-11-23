@@ -5,21 +5,23 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
+
 import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
+
+import org.twak.utils.Cache;
+import org.twak.utils.ConsecutivePairs;
+import org.twak.utils.Line;
+import org.twak.utils.Line3D;
+import org.twak.utils.LinearForm3D;
+import org.twak.utils.Loop;
+import org.twak.utils.LoopL;
+import org.twak.utils.Loopable;
+import org.twak.utils.Pair;
+
 import straightskeleton.ui.Bar;
-import utils.Cache;
-import utils.ConsecutivePairs;
-import utils.Line;
-import utils.Line3D;
-import utils.LinearForm3D;
-import utils.Loop;
-import utils.LoopL;
-import utils.Loopable;
-import utils.Pair;
 
 /**
  * note: the defn of weight here is a little strange, can

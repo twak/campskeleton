@@ -13,12 +13,12 @@ import java.util.Set;
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
-import utils.ConsecutivePairs;
-import utils.ConsecutiveTriples;
-import utils.Line3D;
-import utils.LinearForm3D;
-import utils.Pair;
-import utils.Triple;
+import org.twak.utils.ConsecutivePairs;
+import org.twak.utils.ConsecutiveTriples;
+import org.twak.utils.Line3D;
+import org.twak.utils.LinearForm3D;
+import org.twak.utils.Pair;
+import org.twak.utils.Triple;
 
 /**
  * A bunch of faces that collide at one point

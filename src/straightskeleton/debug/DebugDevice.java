@@ -16,10 +16,10 @@ import straightskeleton.Corner;
 import straightskeleton.Edge;
 import straightskeleton.Output;
 import straightskeleton.Skeleton;
-import utils.Cache;
-import utils.Loop;
-import utils.LoopL;
-import utils.Loopable;
+import org.twak.utils.Cache;
+import org.twak.utils.Loop;
+import org.twak.utils.LoopL;
+import org.twak.utils.Loopable;
 
 /**
  * Todo:

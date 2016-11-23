@@ -9,10 +9,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.vecmath.Tuple3d;
-import utils.CloneConfirmIterator;
-import utils.ConsecutivePairs;
-import utils.LinearForm3D;
-import utils.Pair;
+import org.twak.utils.CloneConfirmIterator;
+import org.twak.utils.ConsecutivePairs;
+import org.twak.utils.LinearForm3D;
+import org.twak.utils.Pair;
 
 /**
  * A bunch of faces that collide at the same height

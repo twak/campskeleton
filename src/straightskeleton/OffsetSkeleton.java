@@ -10,11 +10,11 @@ import java.util.Set;
 
 import straightskeleton.Output.Face;
 import straightskeleton.ui.DirectionHeightEvent;
-import utils.DHash;
-import utils.Loop;
-import utils.LoopL;
-import utils.ManyManyMap;
-import utils.SetCorrespondence;
+import org.twak.utils.DHash;
+import org.twak.utils.Loop;
+import org.twak.utils.LoopL;
+import org.twak.utils.ManyManyMap;
+import org.twak.utils.SetCorrespondence;
 
 /**
  * input - given in constructor

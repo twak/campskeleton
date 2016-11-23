@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>twak</groupId>
+	<groupId>org.twak.campskeleton</groupId>
 	<artifactId>campskeleton</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<build>
@@ -27,6 +27,13 @@
 	</build>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.twak.utils</groupId>
+			<artifactId>utils</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	
+	
 		<dependency>
 			<groupId>javax.vecmath</groupId>
 			<artifactId>vecmath</artifactId>

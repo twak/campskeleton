@@ -13,12 +13,12 @@ import java.util.Set;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
 import straightskeleton.debug.DebugDevice;
-import utils.Cache;
-import utils.DHash;
-import utils.Line3D;
-import utils.Loop;
-import utils.LoopL;
-import utils.SetCorrespondence;
+import org.twak.utils.Cache;
+import org.twak.utils.DHash;
+import org.twak.utils.Line3D;
+import org.twak.utils.Loop;
+import org.twak.utils.LoopL;
+import org.twak.utils.SetCorrespondence;
 
 /**
  * Arbitrary topology update of the corners/edges on the sweep plane

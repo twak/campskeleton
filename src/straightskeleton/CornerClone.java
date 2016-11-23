@@ -5,11 +5,11 @@
 
 package straightskeleton;
 
-import utils.Cache;
-import utils.DHash;
-import utils.Loop;
-import utils.LoopL;
-import utils.SetCorrespondence;
+import org.twak.utils.Cache;
+import org.twak.utils.DHash;
+import org.twak.utils.Loop;
+import org.twak.utils.LoopL;
+import org.twak.utils.SetCorrespondence;
 
 /**
  *

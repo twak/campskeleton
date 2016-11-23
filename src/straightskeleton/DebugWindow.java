@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.JFrame;
 import javax.vecmath.Point2d;
-import utils.Cache;
-import utils.Loop;
-import utils.LoopL;
+import org.twak.utils.Cache;
+import org.twak.utils.Loop;
+import org.twak.utils.LoopL;
 
 /**
  *

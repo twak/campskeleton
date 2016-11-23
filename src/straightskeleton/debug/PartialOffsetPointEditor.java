@@ -16,12 +16,12 @@ import straightskeleton.Machine;
 import straightskeleton.OffsetSkeleton;
 import straightskeleton.ui.Bar;
 import straightskeleton.ui.PointEditor;
-import utils.Cache;
-import utils.ConsecutivePairs;
-import utils.LContext;
-import utils.Loop;
-import utils.LoopL;
-import utils.Pair;
+import org.twak.utils.Cache;
+import org.twak.utils.ConsecutivePairs;
+import org.twak.utils.LContext;
+import org.twak.utils.Loop;
+import org.twak.utils.LoopL;
+import org.twak.utils.Pair;
 
 /**
  *

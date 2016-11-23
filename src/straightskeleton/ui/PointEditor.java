@@ -20,14 +20,14 @@ import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple2d;
 import straightskeleton.Edge;
-import utils.ConsecutivePairs;
-import utils.LContext;
-import utils.Line;
-import utils.Loop;
-import utils.LoopL;
-import utils.Loopable;
-import utils.Pair;
-import utils.PanMouseAdaptor;
+import org.twak.utils.ConsecutivePairs;
+import org.twak.utils.LContext;
+import org.twak.utils.Line;
+import org.twak.utils.Loop;
+import org.twak.utils.LoopL;
+import org.twak.utils.Loopable;
+import org.twak.utils.Pair;
+import org.twak.utils.PanMouseAdaptor;
 
 /**
  *
