@@ -1,7 +1,7 @@
 package straightskeleton.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+//import org.junit.Assert;
+//import org.junit.Test;
 
 import straightskeleton.Corner;
 import straightskeleton.Edge;
@@ -11,7 +11,7 @@ import utils.Loop;
 import utils.LoopL;
 
 public class TestBasic {
-	@Test
+//	@Test
 	public void testBasic() {
 		Loop<Edge> loop1 = new Loop<Edge>();
 		Corner c1 = new Corner ( 0,0), 
@@ -31,7 +31,7 @@ public class TestBasic {
 		for (Loop<Corner> ll : output) {
 			for (Corner c : ll)
 			{
-				Assert.assertNotNull( c );
+//				Assert.assertNotNull( c );
 				System.out.println(c);
 			}
 			System.out.println(">>");
