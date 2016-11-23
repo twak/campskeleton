@@ -11,10 +11,10 @@ import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 import straightskeleton.Edge;
 import straightskeleton.Feature;
-import utils.Cache;
-import utils.Line;
-import utils.Loop;
-import utils.LoopL;
+import org.twak.utils.Cache;
+import org.twak.utils.Line;
+import org.twak.utils.Loop;
+import org.twak.utils.LoopL;
 
 /**
  * @author twak

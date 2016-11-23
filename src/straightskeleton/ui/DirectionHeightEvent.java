@@ -13,8 +13,8 @@ import straightskeleton.Output.Face;
 import straightskeleton.Skeleton;
 import straightskeleton.SkeletonCapUpdate;
 import straightskeleton.debug.DebugDevice;
-import utils.DHash;
-import utils.LoopL;
+import org.twak.utils.DHash;
+import org.twak.utils.LoopL;
 
 public class DirectionHeightEvent implements HeightEvent
 {

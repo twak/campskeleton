@@ -15,15 +15,15 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
 import straightskeleton.Output.Face;
 import straightskeleton.debug.DebugDevice;
-import utils.Cache;
-import utils.CloneConfirmIterator;
-import utils.DHash;
-import utils.LinearForm3D;
-import utils.Loop;
-import utils.LoopL;
-import utils.ManyManyMap;
-import utils.MultiMap;
-import utils.SetCorrespondence;
+import org.twak.utils.Cache;
+import org.twak.utils.CloneConfirmIterator;
+import org.twak.utils.DHash;
+import org.twak.utils.LinearForm3D;
+import org.twak.utils.Loop;
+import org.twak.utils.LoopL;
+import org.twak.utils.ManyManyMap;
+import org.twak.utils.MultiMap;
+import org.twak.utils.SetCorrespondence;
 
 /**
  * to debug: does it work at all (PointEditor)

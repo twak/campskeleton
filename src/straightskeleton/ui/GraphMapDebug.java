@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.vecmath.Point3d;
-import utils.GraphMap;
+import org.twak.utils.GraphMap;
 
 /**
  *

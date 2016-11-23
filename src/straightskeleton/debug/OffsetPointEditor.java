@@ -13,9 +13,9 @@ import straightskeleton.Edge;
 import straightskeleton.Machine;
 import straightskeleton.Skeleton;
 import straightskeleton.ui.Bar;
-import utils.Cache;
-import utils.Loop;
-import utils.LoopL;
+import org.twak.utils.Cache;
+import org.twak.utils.Loop;
+import org.twak.utils.LoopL;
 
 /**
  *

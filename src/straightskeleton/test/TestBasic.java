@@ -7,8 +7,8 @@ import straightskeleton.Corner;
 import straightskeleton.Edge;
 import straightskeleton.Machine;
 import straightskeleton.OffsetSkeleton;
-import utils.Loop;
-import utils.LoopL;
+import org.twak.utils.Loop;
+import org.twak.utils.LoopL;
 
 public class TestBasic {
 //	@Test

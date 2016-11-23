@@ -6,13 +6,13 @@
 package straightskeleton;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
+
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
+
 import straightskeleton.debug.DebugDevice;
-import utils.CloneConfirmIterator;
 
 /**
  *

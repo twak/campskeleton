@@ -11,16 +11,16 @@ import java.util.Set;
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
-import utils.AngleAccumulator;
-import utils.Cache;
-import utils.ConsecutiveTriples;
-import utils.GraphMap;
-import utils.IdentityLookup;
-import utils.ItComb;
-import utils.Loop;
-import utils.LoopL;
-import utils.Loopable;
-import utils.Triple;
+import org.twak.utils.AngleAccumulator;
+import org.twak.utils.Cache;
+import org.twak.utils.ConsecutiveTriples;
+import org.twak.utils.GraphMap;
+import org.twak.utils.IdentityLookup;
+import org.twak.utils.ItComb;
+import org.twak.utils.Loop;
+import org.twak.utils.LoopL;
+import org.twak.utils.Loopable;
+import org.twak.utils.Triple;
 
 /**
  * @author twak
