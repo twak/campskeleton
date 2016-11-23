@@ -10,7 +10,7 @@ import java.util.Set;
 import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 import straightskeleton.Edge;
-import straightskeleton.Feature;
+import straightskeleton.Tag;
 import org.twak.utils.Cache;
 import org.twak.utils.Line;
 import org.twak.utils.Loop;
@@ -22,9 +22,9 @@ import org.twak.utils.LoopL;
 public class Bar
 {
     public Point2d start, end;
-    public List<Marker> markers = new ArrayList();
-    public Set<Feature> tags = new LinkedHashSet();
-    public Mould mould = new Mould();
+//    public List<Marker> markers = new ArrayList();
+    public Set<Tag> tags = new LinkedHashSet();
+    public Mould mould = new NaiveMould();
 
     public Bar (Point2d start, Point2d end)
     {
@@ -51,29 +51,41 @@ public class Bar
         return Math.sqrt( lengthSquared() );
     }
     
-    public void addMarker( Marker m )
-    {
-        m.set( new Line (start, end).project( m, true ) );
-        markers.add( m );
-        m.bar = this;
-    }
+//    public void addMarker( Marker m )
+//    {
+//        m.set( new Line (start, end).project( m, true ) );
+//        markers.add( m );
+//        m.bar = this;
+//    }
 
-    public void updateMarkers()
-    {
-        for (Marker m : markers)
-        {
-            m.set( new Line (start, end).project( m, true ) );
-            m.bar = this;
-        }
-
-    }
+//    public void updateMarkers()
+//    {
+//        for (Marker m : markers)
+//        {
+//            m.set( new Line (start, end).project( m, true ) );
+//            m.bar = this;
+//        }
+//
+//    }
 
     @Override
     public String toString ()
     {
         return "{"+start +", " +end +"}";
     }
-    
+
+    public static LoopL<Bar> clone (LoopL<Bar> in, AffineTransform at )
+    {
+        LoopL<Bar> out= new LoopL();
+
+        for (Loop<Bar> loop : in)
+        {
+            out.add( clone( loop, at) );
+        }
+
+        return out;
+    }
+
     /**
      * Creates new loop with same shape, ignoring markers
      */
@@ -104,22 +116,15 @@ public class Bar
             assert (end != null);
 
             Bar newBar = new Bar( start, end ) ;
-            newBar.markers = new ArrayList ();
-            for (Marker m : bar.markers)
-            {
-                Marker newM = new Marker(m.feature);
-                Point2D dest = new Point.Double();
-                at.transform( new Point.Double( end.x, end.y ), dest );
-                newM.set( dest.getX(), dest.getY() );
-                newBar.markers.add( newM );
-                newM.bar = newBar;
-            }
+            // assume we can just copy these...
+            newBar.mould = bar.mould;
+            newBar.tags = new LinkedHashSet<Tag>(bar.tags);
 
             out.append( newBar );
             start = end;
         }
 
-        // if we were a loop, a loop we shall be
+        // if we were a loop, a loop we shall remain
         if (in.start.getPrev().get().end == in.start.get().start)
             out.start.getPrev().get().end = out.start.get().start;
 

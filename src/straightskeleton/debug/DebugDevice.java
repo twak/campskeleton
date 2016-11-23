@@ -22,35 +22,12 @@ import org.twak.utils.LoopL;
 import org.twak.utils.Loopable;
 
 /**
- * Todo:
- *
- * Remove coupling to UI thread!
- *
- * Display several LoopL<Corner>
- * Hover over corners for location.
- * Hover over edges to see: current corners, end points, current gradients.
- * Need a clone ceveral LoopL<Corner>
- * Hover over corners for location.
- * Hover over edges to see: current corners, end points, current gradients.
- * Need a corners that clones currentCorners, removes machiens, stores current gradients.
- *
- * Display data in skeleton.out (points on faces, parent faces)
- * Hover over a leading corner -> view Face
- *
- * hard wired demos:
- * offset of 1cm on selected faces
- * horizontal extrude of 1cm @ height 2cm-pi/4 grad
- * 
- * pretty iutput
- * nested anchors?
- * absolute, relative anchors, repeating anchors
- *
  * @author twak
  */
 public class DebugDevice
 {
     // global debug switch
-    public static boolean debug = false;
+    public static boolean debug; // change in reset(), below
     static DebugDevice instance = new DebugDevice();
 
     public static void reset() {

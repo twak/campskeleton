@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.vecmath.Tuple3d;
+import straightskeleton.debug.DebugDevice;
 import org.twak.utils.CloneConfirmIterator;
 import org.twak.utils.ConsecutivePairs;
 import org.twak.utils.LinearForm3D;
@@ -118,7 +119,7 @@ public class HeightCollision implements HeightEvent
         skel.qu.resumeRemoves();
 
         processHoriz( skel );
-        
+//         DebugDevice.dump("hc, tmp "+height, skel);
 
         return changed;
     }
@@ -230,7 +231,7 @@ public class HeightCollision implements HeightEvent
                     // this (section of this ) edge ends at this height
                     s.nextL.currentCorners.remove( s );
                     s.nextL.currentCorners.remove( e );
-                    skel.output.addOutputSideTo( s, e, s.nextL, winner );
+                    skel.output.addOutputSideTo( true, s, e, s.nextL, winner );
                 }
 
                 skel.liveCorners.remove( s ); // add in first and last below

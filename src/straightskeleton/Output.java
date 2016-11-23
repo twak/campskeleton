@@ -28,10 +28,11 @@ import org.twak.utils.Triple;
 public class Output
 {
     // marker for horizontal input edges (other edges can also be horizontal...)
-    public static Feature isCreatedHorizontal = new Feature ("horizontal");
+    public static Tag isCreatedHorizontal = new Tag ("horizontal");
 
     public Map<Corner, Face> faces = new LinkedHashMap(); // the faces represented by each edge
     public List<LoopNormal> nonSkelFaces = new ArrayList();
+    public List<LoopNormal> nonSkelFaces2 = new ArrayList();
 
     public IdentityLookup<SharedEdge> edges = new IdentityLookup(); // edge ensure that each output edge only exists once
 
@@ -52,7 +53,7 @@ public class Output
      * @param profileFeatures
      */
 
-    public void newEdge (Edge e, Corner aParentLeadingCorner, Set<Feature> profileFeatures )
+    public void newEdge (Edge e, Corner aParentLeadingCorner, Set<Tag> profileFeatures )
     {
         Face face = new Face();
 
@@ -120,7 +121,14 @@ public class Output
 
     public void addNonSkeletonOutputFace( LoopL<Point3d> points, Vector3d norm )
     {
+
+        if (points.size() > 1)
+            System.out.println("here bos");
         nonSkelFaces.add (new LoopNormal(points, norm));
+    }
+    public void addNonSkeletonOutputFace2( LoopL<Point3d> points, Vector3d norm )
+    {
+        nonSkelFaces2.add (new LoopNormal(points, norm));
     }
 
     public void setParent( Corner neu, Corner old )
@@ -274,7 +282,7 @@ public class Output
                 nullFaces.add( f );
         }
         
-        assert (nullFaces.size() == 0); // do something sensible!
+//        assert (nullFaces.size() == 0); // do something sensible!
 
         for (Face f : faces.values())
             f.findSharedEdges();
@@ -306,8 +314,10 @@ public class Output
         toKeepFace.definingCorners.addAll( toGoFace.definingCorners );
 
         // forward any further face requests to the new one
-        faces.put (toGo.nextL.start, toKeepFace);
+//        faces.put (toGo.nextL.start, toKeepFace);
         faces.put (toGo, toKeepFace );
+
+
     }
 
     private SharedEdge createEdge ( Tuple3d start, Tuple3d end)
@@ -386,7 +396,7 @@ public class Output
         // first is outside, others are holes
         public LoopL<Point3d> points = null;
 
-        public Set<Feature> plan = new HashSet(), profile = new HashSet();
+        public Set<Tag> plan = new HashSet(), profile = new HashSet();
 
         // bottom edges
         public Set<SharedEdge> definingSE = new LinkedHashSet();
@@ -471,7 +481,7 @@ public class Output
     {
         Point3d start, end;
         public Face left, right;
-        Set <Feature> features = new HashSet();
+        Set <Tag> features = new HashSet();
 
         private SharedEdge( Point3d start, Point3d end )
         {

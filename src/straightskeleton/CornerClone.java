@@ -45,6 +45,7 @@ public class CornerClone
             {
                 Edge edge = new Edge ( cornerCache.get( i.start ), cornerCache.get ( i.end ) );
 
+
                 edge.setAngle( i.getAngle() );
                 edge.machine = i.machine; // nextL is null when we have a non root global
 //              edge.profileFeatures = new LinkedHashSet<Feature>(current.nextL.profileFeatures);

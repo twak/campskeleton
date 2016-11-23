@@ -1,7 +1,9 @@
 package straightskeleton.ui;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import straightskeleton.Tag;
 import javax.vecmath.Point2d;
 
@@ -9,23 +11,16 @@ import javax.vecmath.Point2d;
  * marks the locatino of a feature on a Bar
  * @author twak
  */
-public class Marker extends Point2d
+public class Anchor extends Point2d
 {
-    @Deprecated
     public Tag feature;
-    
     public Bar bar;
 
-    // what created this marker?
-    public Object generator;
-
-    @Deprecated
     public Map<String, Object> properties = new HashMap();
-    
-    @Deprecated
     public final static String TYPE = "type";
 
-
+    // none of this is searilized?
+    public transient Set<F2> features = new HashSet();
 
     public enum Type
     {
@@ -43,13 +38,10 @@ public class Marker extends Point2d
             return name;
         }
     }
-
-    @Deprecated
-    public Marker(Tag feature) {
+    
+    public Anchor (Tag feature)
+    {
         this.feature = feature;
-        properties.put(TYPE, Type.Rel);
-    }
-
-    public Marker() {
+        properties.put( TYPE, Type.Rel);
     }
 }

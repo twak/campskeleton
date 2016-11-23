@@ -13,7 +13,8 @@ import javax.vecmath.Point2d;
 import straightskeleton.Corner;
 import straightskeleton.Edge;
 import straightskeleton.Machine;
-import straightskeleton.OffsetSkeleton;
+import straightskeleton.offset.Offset;
+import straightskeleton.offset.OffsetSkeleton;
 import straightskeleton.ui.Bar;
 import straightskeleton.ui.PointEditor;
 import org.twak.utils.Cache;
@@ -180,7 +181,7 @@ public class PartialOffsetPointEditor extends PointEditor
                         os.registerProfile(machineN, 0, 1);
                         os.registerProfile(machineO, Math.PI/4, 1);
 
-                        OffsetSkeleton.Offset out = (OffsetSkeleton.Offset) os.getResults().get(0);
+                        Offset out = (Offset) os.getResults().get(0);
 
                         PartialOffsetPointEditor.this.output = out.shape;
                     } finally {

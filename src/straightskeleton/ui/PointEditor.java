@@ -11,15 +11,21 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple2d;
 import straightskeleton.Edge;
+import org.twak.utils.Cache;
 import org.twak.utils.ConsecutivePairs;
 import org.twak.utils.LContext;
 import org.twak.utils.Line;
@@ -43,7 +49,7 @@ public class PointEditor extends JComponent
     public PanMouseAdaptor ma;
 
     boolean paintGrid = false;
-
+    
     public class Handle extends Point
     {
         public Edge edge;
@@ -91,7 +97,7 @@ public class PointEditor extends JComponent
             loop.append( new Bar( pair.first(), pair.second() ) );
         }
 
-        // F-shape
+// F-shape
 //        for ( Pair<Point2d, Point2d> pair : new ConsecutivePairs<Point2d>( Arrays.asList(
 //            new Point2d (250,100),
 //            new Point2d (350,100),
@@ -125,7 +131,7 @@ public class PointEditor extends JComponent
             } // ignores final point :P
 
         mean.scale( 1/(double)count );
-        centerView( new Point( (int) mean.x, (int) mean.y+200 ) );
+        centerView( new Point( (int) mean.x, (int) mean.y ) );
     }
 
 
@@ -165,6 +171,16 @@ public class PointEditor extends JComponent
         return true;
     }
 
+    protected boolean allowDrag (Loop<Bar> loop)
+    {
+        return false;
+    }
+
+    protected boolean allowDrag(Point2d dragged) {
+        return true;
+    }
+
+
     public void remove( LContext<Bar> ctx, Point2d dragged )
     {
         if (!allowRemove( ctx, dragged ))
@@ -194,10 +210,8 @@ public class PointEditor extends JComponent
         else
             throw new Error( "something fishy going on here" );
 
-        handles.removeAll( ctx.get().markers );
-
         for ( Bar b : edges.eIterator() )
-            b.updateMarkers();
+            refreshMarkersOn(b);
 
         repaint();
     }
@@ -221,7 +235,7 @@ public class PointEditor extends JComponent
         edgeAdded( dragged );
 
         for ( Bar b : ctx.loop )
-            b.updateMarkers();
+            refreshMarkersOn(b);
     }
 
     /**
@@ -235,6 +249,9 @@ public class PointEditor extends JComponent
             return; // released
         for ( Bar b : draggedLoop )
             b.start.add( offset );
+        
+        for ( Bar b : draggedLoop )
+            refreshMarkersOn(b);
     }
 
 
@@ -261,6 +278,8 @@ public class PointEditor extends JComponent
         paintPointEditor( g2 );
 
         g2.setTransform( old );
+        
+        paintChildren( g );
     }
 
 
@@ -283,64 +302,57 @@ public class PointEditor extends JComponent
             drawPixel( g2, bar.start );
     }
 
+    /**
+     * Called when some once double clicks on something
+     * @param dragged
+     */
+    public void showMenu( LContext<Bar> dragged, MouseEvent evt )
+    {
+        // override me
+    }
+
+    double gridSize = 1;
+
+    public void setGridSize(double gridSize)
+    {
+        this.gridSize = gridSize;
+        repaint();
+    }
+
     private Point2d doSnap( LContext<Bar> ctx, Point2d pt, Point2d loc )
     {
-        double tol = 10;
         return new Point2d ( 
-                Math.round ( loc.x / tol ) * tol,
-                Math.round ( loc.y / tol ) * tol);
+                Math.round ( loc.x / gridSize ) * gridSize,
+                Math.round ( loc.y / gridSize ) * gridSize);
+    }
 
-//        double tol = 5;
-//        List<Line> lf = new ArrayList();
-//        bar:
-//        for (Bar b : edges.eIterator())
-//        {
-//            if ( b != ctx.loopable.get() || b != ctx.loopable.getPrev().get() )
-//            {
-//                Line f = new Line( b.start, b.end );
-//                lf.add( f );
-//            }
-//        }
-//
-//        List<Line> hits = new ArrayList();
-//
-//        // not perfect, but it'll do - exclude on similar angle?
-//        for (Line f : lf)
-//        {
-//            double found = f.distance (loc);
-//
-//            double min = loc.distance( f.project( loc, true));
-//
-//            if ( found < tol && min > 2 )
-//            {
-//                hits.add(f);
-//            }
-//        }
-//
-//        for (Line l : hits)
-//            loc = l.project( loc, false );
-//
-//        Bar start = ctx.loopable.getPrev().getPrev().get();
-//        // mid point is loc
-//        Bar end = ctx.loopable.getNext().get();
-//
-//        LinearForm sl =  new LinearForm ( new Line (start.start, start.end) );
-//        sl.perpendicular();
-//        sl.findC( start.end );
-//        Line sE = sl.toLine( 0, 1000 );
-//
-//        LinearForm el =  new LinearForm ( new Line (end.start, end.end) );
-//        el.perpendicular();
-//        el.findC( end.start );
-//        Line eE = el.toLine( 0, 1000 );
-//
-//        Point2d target = sE.intersects( eE, false);
-//
-//        if (target != null)
-//        if (loc.distance( target )< 5)
-//            return target;
-//
-//        return loc;
+    protected void drawGrid(Graphics2D g2)
+    {
+        if (gridSize <= 0)
+            return;
+        
+        g2.setColor(Color.green);
+        int xOff = ma.toX( Math.floor( ma.fromX(0) / gridSize ) *gridSize );
+        int xCount = (int) (Math.ceil( ma.fromZoom(getWidth())/gridSize ));
+
+        if (xCount > 300) // don't kill graphics system trying to draw the grid
+            return;
+
+        for (int x = 0; x < xCount; x++)
+        {
+            int xc = (int)(x*gridSize * ma.getZoom())+xOff;
+            g2.drawLine(xc, 0, xc, getHeight());
+        }
+    
+
+        int yOff = ma.toY( Math.floor( ma.fromY(0) / gridSize ) *gridSize );
+        int yCount = (int) (Math.ceil( ma.fromZoom(getHeight())/gridSize ));
+
+        for (int y = 0; y < yCount; y++)
+        {
+            int yc = (int)(y*gridSize * ma.getZoom())+yOff;
+            g2.drawLine(0, yc, getWidth(), yc );
+        }
     }
 
     /**
@@ -399,6 +411,15 @@ public class PointEditor extends JComponent
     protected void drawLine (Graphics g, double x, double y, double x2, double y2)
     {
         g.drawLine( ma.toX( x ), ma.toY( y ), ma.toX( x2 ), ma.toY( y2 ) );
+    }
+
+    protected void drawLine (Graphics g, Point2d start, Point2d end )
+    {
+            g.drawLine(
+                ma.toX( start.x ),
+                ma.toY( start.y ),
+                ma.toX( end.x ),
+                ma.toY( end.y ) );
     }
 
     protected void drawLine (Graphics g, Point3d start, Point3d end )
@@ -496,6 +517,7 @@ public class PointEditor extends JComponent
 
     private class EditorMouseAdapter extends MouseAdapter
     {
+        @Override
         public void mousePressed( MouseEvent e )
         {
             if ( e.getButton() == ma.button )
@@ -505,12 +527,12 @@ public class PointEditor extends JComponent
             mousePressed_( e );
 
             repaint();
-
         }
 
         public void mousePressed_( MouseEvent e )
         {
             dragged = null;
+            draggedBarSet = null;
 
             Point loc = new Point( (int) ma.fromX( e.getPoint().x ), (int) ma.fromY( e.getPoint().y ) );
 
@@ -518,8 +540,11 @@ public class PointEditor extends JComponent
 
             for ( Point2d point : handles )
             {
+                if (!allowDrag(point))
+                    continue;
+                
                 double dist = ma.to( point ).distanceSq( e.getPoint() );
-                if ( dist < 100 )
+                if ( dist < 200 )
                 {
                     if ( dragged != null )
                         if ( dist > ((Point2d) dragged.hook).distance( ept ) )
@@ -533,15 +558,19 @@ public class PointEditor extends JComponent
             while ( bit.hasNext() )
             {
                 LContext<Bar> ctx = bit.next();
+                Bar b = ctx.get();
 
                 List<Point2d> pts = new ArrayList( Arrays.asList( new Point2d[]
                         {
-                            ctx.get().start, ctx.get().end
+                            b.start, b.end
                         } ) );
-                pts.addAll( ctx.get().markers );
+
+                pts.addAll( b.mould.getAnchorsForEditing(b, b.start, b.end ) );
 
                 for ( Point2d point : pts )
                 {
+                    if (!allowDrag(point))
+                        continue;
                     // to screenspace!
                     double dist = ma.to( point ).distanceSq( e.getPoint() );
                     if ( dist < 100 )
@@ -554,42 +583,65 @@ public class PointEditor extends JComponent
                     }
                 }
             }
-
+            
             if ( dragged != null )
             {
+
                 if ( (e.getModifiersEx() & MouseEvent.SHIFT_DOWN_MASK) > 0 )
                 {
                     remove( dragged, (Point2d) dragged.hook );
                     dragged = null;
                 }
+                else if (e.getClickCount() == 2)
+                {
+                    showMenu(dragged, e);
+                    return;
+                }
                 else
+                {
                     repeat( ept, e );
+                }
 
                 return;
             }
 
 
+            // no point selected, how about edges?
             LContext<Bar> selected = null;
 
             selected = getNearest( ept, ma.fromZoom( 10 ) );
 
             if ( selected != null )
+            {
+                if (e.getClickCount() == 2)
+                {
+                    showMenu(selected, e);
+                    return;
+                }
                 // an edge has been selected - are we adding a point or selecting the edge
-                if ( (e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) > 0 )
+                else if ( (e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) > 0 )
                 {
                     addBetween( selected, loc );
                     return;
                 }
+                else if( (e.getModifiersEx() & MouseEvent.SHIFT_DOWN_MASK) > 0 )
+                {
+                    remove( selected, ept );
+                }
                 else
-                    barSelected.barSelected( currentBar = selected );
-
+                    barSelected( selected );
+            }
 
             dragStartPoint.set( ept );
+            draggedBarSet = null;
             
             // no edge selected, how about entire loops
             for ( Loop<Bar> loop : edges )
-                if ( containsLoop( edges, ept ) )
+                if ( allowDrag(loop) && contains( loop, ept ) )
+                {
                     draggedBarSet = loop;
+                    continue;
+                }
 
             if ( draggedBarSet != null )
                 return;
@@ -599,6 +651,12 @@ public class PointEditor extends JComponent
             {
                 createSection( loc, contains( edges, ept ) );
                 repaint();
+                return;
+            }
+
+            if (e.getClickCount() == 2)
+            {
+                showMenu(null, e);
                 return;
             }
 
@@ -628,7 +686,6 @@ public class PointEditor extends JComponent
                 return;
 
             Point2d loc = ma.from( e.getPoint() );
-
 
             if (dragged == null)
             {
@@ -665,6 +722,16 @@ public class PointEditor extends JComponent
 
             dragged = null;
         }
+    }
+    
+    public boolean isDragging()
+    {
+        return dragged != null;
+    }
+
+    protected void barSelected(LContext<Bar> selected)
+    {
+        barSelected.barSelected(currentBar = selected);
     }
 
     public interface BarSelected
@@ -718,5 +785,48 @@ public class PointEditor extends JComponent
                 in = !in;
         }
         return in;
+    }
+
+
+    // map contains the markers that each bar has contributed at the current time
+    Cache<Bar, Set<Marker>> barMarkerCache = new Cache<Bar, Set<Marker>>()
+    {
+        @Override
+        public Set<Marker> create( Bar i )
+        {
+            return new LinkedHashSet();
+        }
+    };
+    
+    public void refreshMarkersOn(Bar b)
+    {
+        Set<Marker> sm = new HashSet ( barMarkerCache.get( b ) );
+        barMarkerCache.cache.remove(b);
+        handles.removeAll(sm); // handles.size()
+        sm.clear();
+        sm.addAll( b.mould.getAnchorsForEditing(b, b.start, b.end ) );
+        handles.addAll( sm );
+        barMarkerCache.put(b, sm);
+    }
+
+    public void removeMarkersFromBar( Bar bar )
+    {
+        Set<Marker> sm = barMarkerCache.get( bar );
+        handles.removeAll(sm);
+        sm.clear();
+        barMarkerCache.cache.remove( bar );
+    }
+
+    public boolean canExport() { return false; }
+    public boolean canImport() { return false; }
+
+    public void exportt(File f)
+    {
+        JOptionPane.showMessageDialog( this, "Cannot export from this editor", "Editor not configured for export", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void importt(File f)
+    {
+        JOptionPane.showMessageDialog( this, "Cannot import from this editor", "Editor not configured for import", JOptionPane.ERROR_MESSAGE);
     }
 }
