@@ -3,8 +3,10 @@ package straightskeleton;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
+import straightskeleton.ui.Bar;
 import org.twak.utils.Cache;
 import org.twak.utils.LContext;
 import org.twak.utils.Loop;
@@ -281,6 +283,66 @@ public class Corner extends Point3d implements Iterable<Corner>
         }
 
         return loopl;
+    }
+
+    public static LoopL<Corner> fromBar( LoopL<Bar> ribbon )
+    {
+        LoopL<Corner> loopl = new LoopL();
+
+
+        Cache<Point2d, Corner> cache = new Cache<Point2d, Corner>()
+        {
+            @Override
+            public Corner create( Point2d i )
+            {
+                return new Corner (i.x, i.y);
+            }
+        };
+
+        for (Loop<Bar> pLoop : ribbon)
+        {
+            Loop<Corner> loop = new Loop();
+            loopl.add( loop );
+            for ( Bar bar : pLoop )
+                loop.append( cache.get(bar.start) );
+        }
+
+        for (Loop<Corner> loop : loopl)
+            for (Loopable<Corner> loopable : loop.loopableIterator())
+            {
+                Corner p = loopable.get(), n = loopable.getNext().get();
+                p.nextC = n;
+                n.prevC = p;
+                Edge e = new Edge(p, n);
+                p.nextL = e;
+                n.prevL = e;
+            }
+
+        return loopl;
+    }
+
+    public static LoopL<Point2d> toPoint2d(LoopL<Corner> shape)
+    {
+        return shape.new Map<Point2d>()
+        {
+            @Override
+            public Point2d map(Loopable<Corner> input)
+            {
+                return new Point2d(input.get().x, input.get().y);
+            }
+        }.run();
+    }
+
+    public static LoopL<Point3d> toPoint3d(LoopL<Corner> shape)
+    {
+        return shape.new Map<Point3d>()
+        {
+            @Override
+            public Point3d map(Loopable<Corner> input)
+            {
+                return new Point3d(input.get().x, input.get().y, input.get().z);
+            }
+        }.run();
     }
 
     public static LContext<Corner> findLContext( LoopL<Corner> in, Corner c )

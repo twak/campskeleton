@@ -1,7 +1,5 @@
 package straightskeleton.debug;
 
-import javax.swing.JOptionPane;
-
 import straightskeleton.ui.PointEditor;
 
 /**
@@ -24,7 +22,7 @@ public class Main extends javax.swing.JFrame {
      *
      * Key classes are:
      *
-     * PointEditor - start reading here - pls note the elegance with which the skeleton is executed on the awt thread ;)
+     * PointEditor - start reading here - pls note the elgance with which the skeleton is executed on the awt thread ;)
      * Skeleton
      * CoSitedCollision
      *
@@ -41,11 +39,12 @@ public class Main extends javax.swing.JFrame {
 
     /** Creates new form Main */
     public Main() {
-        JOptionPane.showMessageDialog( rootPane, "left drag -> move corners\nright-click move view\nshift-left-click -> remove corner\ncontrol-left-click on a line -> add corners");
+//        JOptionPane.showMessageDialog( rootPane, "left drag -> move corners\nshift-click -> remove corner\ncontrol-click on a line -> add corners");
         initComponents();
 
-        WeightedPointEditor pointEditor1 = new WeightedPointEditor();
-//        SkeletonPointEditor pointEditor1 = new SkeletonPointEditor();
+//        PointEditor pointEditor1 = new MedialPointEditor();
+//        WeightedPointEditor pointEditor1 = new WeightedPointEditor();
+        SkeletonPointEditor pointEditor1 = new SkeletonPointEditor();
 //        PointEditor pointEditor1 = new PartialOffsetPointEditor();
 //        PointEditor pointEditor1 = new OffsetPointEditor();
         setContentPane(pointEditor1);

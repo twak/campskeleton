@@ -13,10 +13,8 @@ import java.util.Set;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
 import straightskeleton.debug.DebugDevice;
-import org.twak.utils.Cache;
 import org.twak.utils.DHash;
 import org.twak.utils.Line3D;
-import org.twak.utils.Loop;
 import org.twak.utils.LoopL;
 import org.twak.utils.SetCorrespondence;
 
@@ -28,8 +26,8 @@ import org.twak.utils.SetCorrespondence;
 public class SkeletonCapUpdate
 {
     Skeleton skel;
-    double height;
-//    DHash<Edge,Edge> edgeMap; // new-> old between cap (old) -> skeleton (very old)
+    // height is our height now, finalHeight is the height of all new geometry (we might slop upwards a bit)
+    double height, finalHeight;
     DHash<Corner,Corner> oBCorner = new DHash();
     
     LoopL<Corner> oldCorners;
@@ -45,7 +43,8 @@ public class SkeletonCapUpdate
     }
 
     /**
-     * Returns a copy of "old" loop. Users are expected to duplicate it
+     * Returns a copy of "old" loop. Users are expected to duplicate it, before returning it to
+     * update, below, with the corresponding data about what came from where.
      *
      * > you must not modify it
      * > you must not change the .currentCorners
@@ -53,7 +52,12 @@ public class SkeletonCapUpdate
      */
     public LoopL<Corner> getCap( double height )
     {
+        return getCap(height, height);
+    }
+    public LoopL<Corner> getCap( double height, double finalHeight )
+    {
         this.height = height;
+        this.finalHeight = finalHeight;
         oldCorners = skel.capCopy( height );
         oBCorner = skel.cornerMap;
 
@@ -114,6 +118,11 @@ public class SkeletonCapUpdate
             
             return segs;
         }
+
+        void addFrom( EdgeInfo togo )
+        {
+            segs.addAll( togo.segs );
+        }
     }
 
     static class Segment
@@ -131,10 +140,10 @@ public class SkeletonCapUpdate
     }
 
     /**
-     * The complicated bit!
+     * The complicated bit:
      *
      * Given a new topology, and a map of what corresponds to the old bits, we ensure the output-faces of the skeleton
-     * are continuous. A picture of the algorithm is in a SVG file.
+     * are continuous. A picture of the algorithm is in a SVG file. somewhere.
      *
      * When we update there are several possibilities:
      * (*) One edge may split to several parallel edges
@@ -156,11 +165,35 @@ public class SkeletonCapUpdate
         this.nOCorner = nOCorner;
 //        DebugWindow.showIfNotShown( newPlan );
 
+
+        // The edge info sections were constructed on the base topology. Colinear edges may have been merged. Extract the info from nOSegments, and merge edgeInfos.
+        for (Corner nc : newPlan.eIterator())
+        {
+            Set<EdgeInfo> eiToMerge = new LinkedHashSet();
+            for (Corner old :nOSegments.getSetA( nc ) )
+                eiToMerge.add( edgeInfo.get ( oBCorner.get( old).nextL) );
+
+            if (eiToMerge.size() < 2)
+                continue;
+
+            Iterator<EdgeInfo> eiit = eiToMerge.iterator();
+            EdgeInfo toKeep = eiit.next(); // edgeInfo.size()
+            while (eiit.hasNext())
+            {
+                EdgeInfo togo = eiit.next();
+                toKeep.addFrom (togo);
+                edgeInfo.remove( togo.base );
+
+                skel.output.merge( toKeep.base.start, togo.base.start );
+            }
+        }
+
+
         for (Corner old : oBCorner.ab.keySet())
             old.z= height;
 
         for ( Corner c : newPlan.eIterator() ) // del: c.nextC.z != 0
-            c.z = height;
+            c.z = finalHeight;
 
         for ( Corner neu : newPlan.eIterator() )
         {

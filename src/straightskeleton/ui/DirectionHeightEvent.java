@@ -6,7 +6,7 @@ import java.util.Set;
 import straightskeleton.Corner;
 import straightskeleton.CornerClone;
 import straightskeleton.Edge;
-import straightskeleton.Feature;
+import straightskeleton.Tag;
 import straightskeleton.HeightEvent;
 import straightskeleton.Machine;
 import straightskeleton.Output.Face;
@@ -23,7 +23,7 @@ public class DirectionHeightEvent implements HeightEvent
     // length is the distance until the next event (only used for horizontal directions)
     public double newAngle;
     Machine machine;
-    public Set<Feature> profileFeatures = new HashSet();
+    public Set<Tag> profileFeatures = new HashSet();
 
     public DirectionHeightEvent( Machine machine, double angle )
     {
@@ -74,26 +74,27 @@ public class DirectionHeightEvent implements HeightEvent
 
             // segments are untouched if they don't contain this machine
             if ( c.nextL.machine == machine )
+            {
+                // copy over profile features
+                // yes, it looks like we add features to an edge we later disable, but it is still referenced in the entire loop and gets used for edge properties.
+                c.nextL.profileFeatures = profileFeatures;
+                
                 cc.nOSegments.removeA( c );
+            }
         }
 
         update.update( cc.output, cc.nOSegments, nOCorner);
 
         /**
          * Must now update the parent field in output for the new edges, so that
-         * we have a know where a face came from
+         * we know where a face came from
          */
         for ( Corner c : skel.liveCorners )
         {
             if ( c.nextL.machine == machine )
             {
-//                Face neu = skel.output.faces.get( c.nextL.start );
-
                 Corner old = update.getOldBaseLookup().get( cc.nOCorner.get( c ));
-
                 skel.output.setParent (c.nextL.start, old.nextL.start);
-
-//                neu.parent = skel.output.faces.get( old.nextL.start );
             }
         }
 

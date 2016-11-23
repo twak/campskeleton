@@ -19,7 +19,7 @@ public interface EdgeCreator
      */
     public List<Corner> getEdges( Edge old, Corner startH, Corner endH );
 
-    public Set<Feature> getFeaturesFor( Edge edgeH );
+    public Set<Tag> getFeaturesFor( Edge edgeH );
 
     public static class DefaultEdgeCreator implements EdgeCreator
     {
@@ -35,7 +35,7 @@ public interface EdgeCreator
             return out;
         }
         
-        public Set<Feature> getFeaturesFor( Edge edgeH )
+        public Set<Tag> getFeaturesFor( Edge edgeH )
         {
             return new HashSet();
         }

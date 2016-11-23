@@ -61,7 +61,7 @@ public class Skeleton
     // after a direction change, keep track of the edges here
 //    public MultiMap<Edge, Edge> inputToOutputEdges = new MultiMap();
 
-    public Map<Edge, Set<Feature>> planFeatures = new LinkedHashMap();
+    public Map<Edge, Set<Tag>> planFeatures = new LinkedHashMap();
 
     // for debugging
     public String name = "?";
@@ -167,7 +167,22 @@ public class Skeleton
      */
     public void setupForEdges (LoopL<Edge> input)
     {
-        setup (Corner.cornerToEdgeLoopL( input ));
+        LoopL<Corner> corners = new LoopL();
+        for (Loop<Edge> le : input) //input.count()
+        {
+            Loop<Corner> lc = new Loop<Corner>();
+            corners.add(lc);
+            for (Edge e : le)
+            {
+                lc.append( e.start);
+                e.start.nextL = e;
+                e.end.prevL = e;
+                e.start.nextC = e.end;
+                e.end.prevC = e.start;
+            }
+        }
+
+        setup (corners); //corners.count()
     }
 
     /**
@@ -193,8 +208,14 @@ public class Skeleton
             List<Corner> corners = allEdges.get( e );
             Corner first = corners.get( 0 );
 
+
             output.newEdge( first.nextL, null, new LinkedHashSet() );
 
+            // why don't we need this?
+//            for (Corner c : corners)
+//                output.newDefiningSegment( first );
+
+            // not sure this is right
             for (int i = 1; i < corners.size(); i++)
                 output.merge( first, corners.get( i ) );
 
@@ -203,6 +224,9 @@ public class Skeleton
 
         for (Corner c : input.eIterator())
         {
+            if (c.z != 0)
+                throw new Error("Corner isn't at zero height");
+
             output.newDefiningSegment( c );
             liveCorners.add(c );
             c.nextL.currentCorners.add(c);
@@ -238,10 +262,11 @@ public class Skeleton
             {
                 if ( he.process( this ) ) // business happens here
                 {
-                    DebugDevice.dump("main "+String.format("%4d", ++i ), this );
                     height = he.getHeight();
+                    DebugDevice.dump("main "+height+" "+String.format("%4d", ++i ), this );
                     validate();
                 }
+//                System.out.println("done at "+he.getHeight());
                 refindFaceEventsIfNeeded();
             }
             catch ( Throwable t )
@@ -253,6 +278,8 @@ public class Skeleton
                     t.getCause().printStackTrace();
                 }
             }
+
+        DebugDevice.dump("after main "+String.format("%4d", ++i ), this );
 
         // build output polygons from constructed graph
         output.calculate( this );
@@ -712,9 +739,9 @@ public class Skeleton
         // context collects events that must be processed immediately following (eg horizontals...)
          HeightCollision context = new HeightCollision();
 
-        qu.clearFaceEvents();
+//        qu.clearFaceEvents();
         for ( Corner lc : new CloneConfirmIterator<Corner>(liveCorners) )
-            qu.addCorner( lc, context );
+            qu.addCorner( lc, context, true );
 
         // if we are not adding new events (and this isn't adding the input the first time)
         // this shouldn't do anything
@@ -808,12 +835,12 @@ public class Skeleton
         }
     }
 
-    public void setPlanTags (Edge edge, Set<Feature> features)
+    public void setPlanTags (Edge edge, Set<Tag> features)
     {
         planFeatures.put( edge, features );
     }
 
-    public Set<Feature> getPlanTags( Edge originator )
+    public Set<Tag> getPlanTags( Edge originator )
     {
         return planFeatures.get( originator );
     }
@@ -849,6 +876,7 @@ public class Skeleton
             Corner start = togo.iterator().next();
 
             Corner current = start;
+            int handbrake = 0;
             do
             {
                 togo.remove(current);
@@ -856,7 +884,13 @@ public class Skeleton
 
                 current = current.nextC;
             }
-            while (current !=start);
+            while (current !=start && handbrake++ < 1000);
+
+            if (handbrake >= 1000)
+            {
+                System.err.println("broken loops in findLiveLoop");
+                Thread.dumpStack();
+            }
         }
 
         return out; //out.count();

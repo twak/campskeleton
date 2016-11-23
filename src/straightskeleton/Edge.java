@@ -5,12 +5,12 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
+import java.util.Vector;
 import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
-
+import straightskeleton.ui.Bar;
 import org.twak.utils.Cache;
 import org.twak.utils.ConsecutivePairs;
 import org.twak.utils.Line;
@@ -20,8 +20,6 @@ import org.twak.utils.Loop;
 import org.twak.utils.LoopL;
 import org.twak.utils.Loopable;
 import org.twak.utils.Pair;
-
-import straightskeleton.ui.Bar;
 
 /**
  * note: the defn of weight here is a little strange, can
@@ -47,7 +45,7 @@ public class Edge
     public Machine machine;
 
     // features that this edge has been tagged with
-    public Set<Feature> profileFeatures = new LinkedHashSet();
+    public Set<Tag> profileFeatures = new LinkedHashSet();
 
 
     public Edge (Corner start, Corner end, double angle)

@@ -155,13 +155,31 @@ public abstract class DebugPointEditor extends PointEditor
                 g2.drawLine( ma.toX( e.start.x ), ma.toY( e.start.y ), ma.toX( e.end.x ), ma.toY( e.end.y ) );
             }
 
-        g2.setColor( Colour.transparent( Color.red, 140 ) );
-        for ( Loop<Corner> loop : corners )
-           for (Loopable<Corner> lc : loop.loopableIterator())
-           {
+        Map<Point3d, Integer> vCount = new HashMap();
+
+        g2.setColor(Colour.transparent(Color.red, 140));
+        for (Loop<Corner> loop : corners)
+            for (Loopable<Corner> lc : loop.loopableIterator())
+            {
                 Corner c1 = lc.get(), c2 = lc.getNext().get();
-                drawLine( g2, c1.x, c1.y, c2.x, c2.y );
-           }
+                drawLine(g2, c1.x, c1.y, c2.x, c2.y);
+
+                for (Corner c : new Corner[]
+                        {
+                            c1
+                        })
+                {
+                    Integer res = vCount.get(new Point3d(c));
+                    if (res == null)
+                        res = new Integer(0);
+                    vCount.put(new Point3d(c), new Integer ( res+1));
+                }
+            }
+
+        g2.setColor(Color.black);
+        g2.setBackground(Color.orange);
+        for (Point3d pt : vCount.keySet())
+            g2.drawString(vCount.get(pt).toString(), ma.toX(pt.x)+5, ma.toY(pt.y)+5);
 
 
         g2.setColor( Color.green.darker().darker() );
