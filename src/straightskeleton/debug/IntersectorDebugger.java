@@ -27,11 +27,12 @@ import org.twak.utils.Loop;
  */
 public class IntersectorDebugger extends PointEditor
 {
+	
 
     public IntersectorDebugger() {
         this.barSelected = new BarSelected() {
 
-            @Override
+        	@Override
             public void barSelected(LContext<Bar> ctx) {
                 edges.remove(ctx.loop);
                 repaint();
