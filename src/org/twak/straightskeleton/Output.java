@@ -8,15 +8,16 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
+
 import org.twak.utils.AngleAccumulator;
 import org.twak.utils.Cache;
 import org.twak.utils.ConsecutiveTriples;
 import org.twak.utils.GraphMap;
 import org.twak.utils.IdentityLookup;
-import org.twak.utils.ItComb;
 import org.twak.utils.Loop;
 import org.twak.utils.LoopL;
 import org.twak.utils.Loopable;
@@ -30,11 +31,10 @@ public class Output
     // marker for horizontal input edges (other edges can also be horizontal...)
     public static Tag isCreatedHorizontal = new Tag ("horizontal");
 
-    public Map<Corner, Face> faces = new LinkedHashMap(); // the faces represented by each edge
-    public List<LoopNormal> nonSkelFaces = new ArrayList();
-    public List<LoopNormal> nonSkelFaces2 = new ArrayList();
-
-    public IdentityLookup<SharedEdge> edges = new IdentityLookup(); // edge ensure that each output edge only exists once
+    public Map<Corner, Face> faces = new LinkedHashMap<>(); // the faces represented by each edge
+    public List<LoopNormal> nonSkelFaces = new ArrayList<>();
+    public List<LoopNormal> nonSkelFaces2 = new ArrayList<>();
+    public IdentityLookup<SharedEdge> edges = new IdentityLookup<>(); // edge ensure that each output edge only exists once
 
     public Skeleton skeleton;
 
@@ -188,8 +188,8 @@ public class Output
         for ( Face face :faces.values() ) //e.toString()
         {
 //            System.out.println( face.results );
-            Set<Point3d> notVisited = new LinkedHashSet( face.results.map.keySet() );
-            LoopL<Point3d> faceWithHoles = new LoopL(); // first entry here is outer boundary
+            Set<Point3d> notVisited = new LinkedHashSet<>( face.results.map.keySet() );
+            LoopL<Point3d> faceWithHoles = new LoopL<>(); // first entry here is outer boundary
             face.points = faceWithHoles;
 
             try
@@ -201,7 +201,7 @@ public class Output
             while ( !notVisited.isEmpty() )
             {
                 // associated face input polygon
-                Loop<Point3d> poly = new Loop();
+                Loop<Point3d> poly = new Loop<>();
 //                faceWithHoles.add( poly );
                 boolean isOuter = notVisited.contains( edgeStart );
 
@@ -275,7 +275,7 @@ public class Output
         }
 
         // * so we remove faces without polygons
-        List<Face> nullFaces = new ArrayList();
+        List<Face> nullFaces = new ArrayList<>();
         for (Face f : faces.values())
         {
             if (f.points.size() <= 0)
@@ -336,17 +336,13 @@ public class Output
             @Override
             public List<Corner> get( Corner aCorner )
             {
-                List<Corner> out = new ArrayList();
-                
                 Face f = faces.get( aCorner.nextL.start );
                 while (f.parent != null)
                 {
                     f = f.parent;
                 }
 
-//                assert (originators.containsB( f ));
-
-                return new ArrayList ( f.definingCorners );
+                return new ArrayList<> ( f.definingCorners );
             }
 
             @Override
@@ -370,7 +366,7 @@ public class Output
         if (poly.count() < 3)
             return;
 
-        Set<Loopable<Point3d>> togo = new HashSet();
+        Set<Loopable<Point3d>> togo = new HashSet<>();
         for ( Triple<Loopable<Point3d>, Loopable<Point3d>, Loopable<Point3d>> trip :
                 new ConsecutiveTriples<Loopable<Point3d>>( poly.loopableIterator(), true ) )
         {
@@ -396,25 +392,25 @@ public class Output
         // first is outside, others are holes
         public LoopL<Point3d> points = null;
 
-        public Set<Tag> plan = new HashSet(), profile = new HashSet();
+        public Set<Tag> plan = new HashSet<>(), profile = new HashSet<>();
 
         // bottom edges
-        public Set<SharedEdge> definingSE = new LinkedHashSet();
+        public Set<SharedEdge> definingSE = new LinkedHashSet<>();
         // defining edges of child (top) edges
-        public Set<SharedEdge> topSE = new LinkedHashSet();
+        public Set<SharedEdge> topSE = new LinkedHashSet<>();
 
         // face below us in the skeleton - can be traced back to an originator
         public Face parent;
         
-        public GraphMap<Point3d> results = new GraphMap();
+        public GraphMap<Point3d> results = new GraphMap<>();
 
         // a typical edge that defines the plane normal
         public Edge edge;
 
         // subset of results who are horizontal edges and whose nextL are edge, or similar.
-        public Set<Corner> definingCorners = new LinkedHashSet();
+        public Set<Corner> definingCorners = new LinkedHashSet<>();
 
-        public LoopL<SharedEdge> edges = new LoopL();
+        public LoopL<SharedEdge> edges = new LoopL<>();
 
         public LoopL<Point3d> getLoopL()
         {
@@ -460,10 +456,10 @@ public class Output
 
         private void findSharedEdges()
         {
-            edges = new LoopL();
+            edges = new LoopL<>();
             for (Loop <Point3d> ptLoop : points)
             {
-                Loop<SharedEdge> loop = new Loop();
+                Loop<SharedEdge> loop = new Loop<>();
                 edges.add (loop);
                 // start and end points of SharedEdges **aren't** shared
                 for (Loopable<Point3d> loopable : ptLoop.loopableIterator())
@@ -481,7 +477,7 @@ public class Output
     {
         Point3d start, end;
         public Face left, right;
-        Set <Tag> features = new HashSet();
+        Set <Tag> features = new HashSet<>();
 
         private SharedEdge( Point3d start, Point3d end )
         {
@@ -574,14 +570,14 @@ public class Output
 
                 Face face = new Face();
 
-                GraphMap outGM = new GraphMap();
+                GraphMap<Point3d> outGM = new GraphMap<>();
                 outGM.addEntriesFrom( old.results );
                 
                 face.results = outGM;
                 face.parent = old.parent == null ? null : get( old.parent );
                 face.edge = new Edge( old.edge.start, old.edge.end );
 
-                face.definingSE = new HashSet ();
+                face.definingSE = new HashSet<> ();
 
                 for (SharedEdge se : old.definingSE)
                 {

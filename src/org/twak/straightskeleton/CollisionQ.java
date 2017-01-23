@@ -34,7 +34,7 @@ public class CollisionQ
     Skeleton skel;
 
     // this is an acceleration structure - we don't process seen triples of edges twice. A similar structure occurs in Skeleton ~ they need merging...
-    private Set<EdgeCollision> seen = new HashSet();
+    private Set<EdgeCollision> seen = new HashSet<>();
 
     /**
      * @param corners the input set of corners
@@ -96,7 +96,7 @@ public class CollisionQ
 
         if (next instanceof EdgeCollision)
         {
-            List<EdgeCollision> coHeighted = new ArrayList();
+            List<EdgeCollision> coHeighted = new ArrayList<>();
             EdgeCollision ec = (EdgeCollision)next;
             coHeighted.add( ec );
 
@@ -134,16 +134,6 @@ public class CollisionQ
             miscEvents.add( he );
     }
 
-    /**
-     * Collide all existing corners against the specified edge
-     * @param edge
-     */
-//    public void checkEdge (Edge edge)
-//    {
-//        for (Corner c : skel.liveCorners)
-//            if (c != edge.start && c != edge.end)
-//                cornerEdgeCollision( c, edge );
-//    }
 
     /**
      * Collide the new edge (toAdd.prev, toAdd.next) against
@@ -155,6 +145,7 @@ public class CollisionQ
     {
         addCorner(toAdd, postProcess, false);
     }
+    
     public void addCorner( Corner toAdd, HeightCollision postProcess, boolean useCache )
     {
         // check these two edges don't share the same face
@@ -244,62 +235,14 @@ public class CollisionQ
                         corner.nextL,
                         edge);
 
-//                parallelEdgeFixUp (corner.prevL, corner.nextL, edge, ec);
 
                 if (! skel.seen.contains( ec ))
                     faceEvents.offer( ec );
             }
     }
 
-//    static class EdgePair
-//    {
-//        Edge a, b;
-//        Point3d collision;
-//
-//        public EdgePair (Edge a, Edge b, Point3d collision)
-//        {
-//            this. a= a;
-//            this.b = b;
-//            this.collision = collision;
-//        }
-//
-//        @Override
-//        public int hashCode()
-//        {
-//            return a.hashCode() + b.hashCode();
-//        }
-//
-//        @Override
-//        public boolean equals(Object obj)
-//        {
-//            EdgePair other = (EdgePair)obj;
-//            return (a == other.a && b == other.b) ||
-//                   (b == other.a && a == other.b);
-//        }
-//    }
-//
-//    Cache<EdgePair, Double> edgeFixUp = new Cache<EdgePair, Double>()
-//    {
-//        @Override
-//        public Double create(EdgePair i)
-//        {
-//            return i.collision.z;
-//        }
-//    };
-//
-//    private void parallelEdgeFixUp(Edge a, Edge b, Edge c, EdgeCollision ec)
-//    {
-//        for (EdgePair ep : new EdgePair[]
-//                {
-//                    new EdgePair(a, b, ec.loc), new EdgePair(b, c, ec.loc), new EdgePair(a, c, ec.loc)
-//                })
-//            if (ep.a.isCollisionNearHoriz(ep.b))
-//                ec.loc.z = edgeFixUp.get(ep);
-//    }
-
-
     boolean holdRemoves = false;
-    List<Corner> removes = new ArrayList();
+    List<Corner> removes = new ArrayList<>();
     public void holdRemoves()
     {
         removes.clear();
