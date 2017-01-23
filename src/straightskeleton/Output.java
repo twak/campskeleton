@@ -475,6 +475,13 @@ public class Output
                 }
             }
         }
+        
+        public Face getFirstParent() {
+        	Face parent = this;
+        	while (parent.parent != null)
+        		parent = parent.parent;
+        	return parent;
+        }
     }
 
     public static class SharedEdge
