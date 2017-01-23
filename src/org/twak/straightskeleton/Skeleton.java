@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
 
@@ -43,26 +44,22 @@ import org.twak.utils.SetCorrespondence;
  */
 public class Skeleton
 {
-    public Set<Corner> liveCorners = new LinkedHashSet();
-    public Set<Edge> liveEdges = new LinkedHashSet();
+    public Set<Corner> liveCorners = new LinkedHashSet<>();
+    public Set<Edge> liveEdges = new LinkedHashSet<>();
     public CollisionQ qu;
     public double height = 0;
-//    public Set<Edge> inputEdges = new LinkedHashSet();
 
     // we store the triplets of faces we've already passed out to stop repeats (insensitive to face order)
-    public Set<EdgeCollision> seen = new LinkedHashSet();
+    public Set<EdgeCollision> seen = new LinkedHashSet<>();
 
     // output data
-    public LoopL<Corner> flatTop = new LoopL();
+    public LoopL<Corner> flatTop = new LoopL<>();
     public Output output = new Output( this );
     
     // debug
-    public List<CoSitedCollision> debugCollisionOrder = new ArrayList();
+    public List<CoSitedCollision> debugCollisionOrder = new ArrayList<>();
 
-    // after a direction change, keep track of the edges here
-//    public MultiMap<Edge, Edge> inputToOutputEdges = new MultiMap();
-
-    public Map<Edge, Set<Tag>> planFeatures = new LinkedHashMap();
+    public Map<Edge, Set<Tag>> planFeatures = new LinkedHashMap<>();
 
     // for debugging
     public String name = "?";
@@ -71,18 +68,6 @@ public class Skeleton
     boolean refindFaceEvents = true;
 
     protected Skeleton(){}
-
-//    public Skeleton ( List<Edge> edges )
-//    {
-//        LoopL<Edge> input = new LoopL();
-//        Loop<Edge> loop = new Loop();
-//        input.add( loop );
-//
-//        for (Edge e : edges)
-//            loop.append( e );
-//
-//        setup ( input );
-//    }
 
     public Skeleton (LoopL<Corner> corners)
     {
@@ -116,14 +101,9 @@ public class Skeleton
 
                 flatTop = capUpdate.getCap(cap);
                 
-//                DebugDevice.dump("pre cap dump", skel);
                 // this call should remove all geometry, and cap the remainder...?
-                capUpdate.update(new LoopL(), new SetCorrespondence<Corner, Corner>(), new DHash<Corner, Corner>());
+                capUpdate.update(new LoopL<>(), new SetCorrespondence<Corner, Corner>(), new DHash<Corner, Corner>());
                 DebugDevice.dump("post cap dump", skel);
-
-                // we're the last event!
-//                qu.clearFaceEvents();
-//                qu.clearOtherEvents();
 
                 return true;
             }
@@ -150,7 +130,7 @@ public class Skeleton
 
                 flatTop = capUpdate.getCap( cap );
                 // this call should remove all geometry, and cap the remainder...?
-                capUpdate.update( new LoopL(), new SetCorrespondence<Corner, Corner>(), new DHash<Corner, Corner>());
+                capUpdate.update( new LoopL<>(), new SetCorrespondence<Corner, Corner>(), new DHash<Corner, Corner>());
              
                 // we're the last event!
 //                qu.clearFaceEvents();
@@ -168,7 +148,7 @@ public class Skeleton
      */
     public void setupForEdges (LoopL<Edge> input)
     {
-        LoopL<Corner> corners = new LoopL();
+        LoopL<Corner> corners = new LoopL<>();
         for (Loop<Edge> le : input) //input.count()
         {
             Loop<Corner> lc = new Loop<Corner>();
@@ -197,7 +177,7 @@ public class Skeleton
         liveCorners.clear(); 
         liveEdges.clear();
 
-        MultiMap<Edge, Corner> allEdges= new MultiMap();
+        MultiMap<Edge, Corner> allEdges= new MultiMap<>();
 
         for (Corner c : input.eIterator()) // input.count()
             allEdges.put( c.nextL, c );
@@ -210,7 +190,7 @@ public class Skeleton
             Corner first = corners.get( 0 );
 
 
-            output.newEdge( first.nextL, null, new LinkedHashSet() );
+            output.newEdge( first.nextL, null, new LinkedHashSet<>() );
 
             // why don't we need this?
 //            for (Corner c : corners)
@@ -267,7 +247,7 @@ public class Skeleton
                     DebugDevice.dump("main "+height+" "+String.format("%4d", ++i ), this );
                     validate();
                 }
-//                System.out.println("done at "+he.getHeight());
+                
                 refindFaceEventsIfNeeded();
             }
             catch ( Throwable t )
@@ -303,7 +283,7 @@ public class Skeleton
     public LoopL<Corner> capCopy (double height)
     {
         segmentMap = new ManyManyMap<Corner, Corner>();
-        cornerMap = new DHash();
+        cornerMap = new DHash<>();
 
         LinearForm3D ceiling = new LinearForm3D( 0, 0, 1, -height );
 
@@ -328,7 +308,7 @@ public class Skeleton
 
          Cache<Corner, Edge> edgeCache = new Cache<Corner, Edge>()
          {
-             Map<Edge, Edge> lowToHighEdge = new HashMap();
+             Map<Edge, Edge> lowToHighEdge = new HashMap<>();
 
             @Override
             /**
@@ -336,7 +316,7 @@ public class Skeleton
              */
             public Edge create( Corner i )
             {
-                Edge cached = lowToHighEdge.get (i.nextL);
+//                Edge cached = lowToHighEdge.get (i.nextL);
 
                 // the following two lines reuse an edge when it is referenced twice. this seems like the better way to do it, but our triangulator can't currently handle two-separate loops of vertices
 //                if (cached != null)
@@ -355,12 +335,12 @@ public class Skeleton
             }
          };
 
-        LoopL<Corner> out = new LoopL();
+        LoopL<Corner> out = new LoopL<>();
 
-        Set<Corner> workingSet = new LinkedHashSet ( liveCorners );
+        Set<Corner> workingSet = new LinkedHashSet<> ( liveCorners );
         while (!workingSet.isEmpty())
         {
-            Loop<Corner> loop = new Loop();
+            Loop<Corner> loop = new Loop<>();
             out.add( loop );
             Corner current = workingSet.iterator().next();
             do
@@ -734,7 +714,7 @@ public class Skeleton
          * Very expensive part - refind all collisions (including those already processed)
          * MachineEvents remain in their current state
          *
-         * should really only be done for those edges that have changed (change for when we integrate eppsteins stuff)
+         * should really only be done for those edges that have changed
          */
 
         // context collects events that must be processed immediately following (eg horizontals...)
@@ -774,9 +754,9 @@ public class Skeleton
      */
     public void validate()
     {
-        if (true)
+        if (false)
         {
-        Set <Corner> all = new LinkedHashSet ( liveCorners );
+        Set <Corner> all = new LinkedHashSet<> ( liveCorners );
         outer:
         while (!all.isEmpty())
         {
@@ -867,11 +847,11 @@ public class Skeleton
     public LoopL<Corner> findLoopLive()
     {
         LoopL<Corner> out = new LoopL<Corner>();
-        Set<Corner> togo = new HashSet(liveCorners);
+        Set<Corner> togo = new HashSet<>(liveCorners);
 
         while (!togo.isEmpty())
         {
-            Loop<Corner> loop = new Loop();
+            Loop<Corner> loop = new Loop<>();
             out.add(loop);
 
             Corner start = togo.iterator().next();
