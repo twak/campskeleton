@@ -14,6 +14,7 @@ import java.util.Set;
 
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
+import javax.vecmath.Vector3d;
 
 import org.twak.straightskeleton.Output.Face;
 import org.twak.straightskeleton.debug.DebugDevice;
@@ -53,7 +54,7 @@ public class Skeleton
     public Set<EdgeCollision> seen = new LinkedHashSet<>();
 
     // output data
-    public LoopL<Corner> flatTop = new LoopL<>();
+//    public LoopL<Corner> flatTop = new LoopL<>();
     public Output output = new Output( this );
     
     // debug
@@ -87,28 +88,11 @@ public class Skeleton
     /**
      * @param cap height (flat-topped skeleton) to finish at
      */
-    public Skeleton(LoopL<Corner> input, final double cap, boolean javaGenericsAreABigPileOfShite) {
+    public Skeleton(LoopL<Corner> input, double cap, boolean javaGenericsAreABigPileOfShite) {
         setup(input);
 
-        qu.add(new HeightEvent() {
-
-            public double getHeight() {
-                return cap;
-            }
-
-            public boolean process(Skeleton skel) {
-                SkeletonCapUpdate capUpdate = new SkeletonCapUpdate(skel);
-
-                flatTop = capUpdate.getCap(cap);
-                
-                // this call should remove all geometry, and cap the remainder...?
-                capUpdate.update(new LoopL<>(), new SetCorrespondence<Corner, Corner>(), new DHash<Corner, Corner>());
-                DebugDevice.dump("post cap dump", skel);
-
-                return true;
-            }
-        });
-    }
+        capAt(cap);
+    }	
 
     /**
      * @Deprecated
@@ -118,29 +102,8 @@ public class Skeleton
     {
         setupForEdges(input);
 
-        qu.add( new HeightEvent() {
-
-            public double getHeight() {
-                return cap;
-            }
-
-            public boolean process(Skeleton skel)
-            {
-                SkeletonCapUpdate capUpdate = new SkeletonCapUpdate( skel );
-
-                flatTop = capUpdate.getCap( cap );
-                // this call should remove all geometry, and cap the remainder...?
-                capUpdate.update( new LoopL<>(), new SetCorrespondence<Corner, Corner>(), new DHash<Corner, Corner>());
-             
-                // we're the last event!
-//                qu.clearFaceEvents();
-//                qu.clearOtherEvents();
-
-                return true;
-            }
-        });
+        capAt(cap);
     }
-
 
     /**
      * Stop-gap measure to convert loops of edges (BAD!) to loops of corners (GOOD!)
@@ -328,8 +291,6 @@ public class Skeleton
 
                 edge.setAngle( i.nextL.getAngle() );
                 edge.machine = i.nextL.machine; // nextL is null when we have a non root global
-//              edge.profileFeatures = new LinkedHashSet<Feature>(current.nextL.profileFeatures);
-//              edgeMap.put( edge, current.nextL );
 
                 return edge;
             }
@@ -380,145 +341,6 @@ public class Skeleton
         //override me
     }
 
-    /**
-     * Given an input edge this method returns a list of
-     * all the current edges that have come from that edge.
-     *
-     * It includes all replaceEdges() edges (not sure if this is correct)
-     */
-//    public List<Edge> findCurrentEdges( Edge inputEdge )
-//    {
-//        List<Edge> out= new ArrayList();
-//        findCurrentEdges( inputEdge, out );
-//        return out;
-//    }
-//
-//    private void findCurrentEdges ( Edge input, List<Edge> results)
-//    {
-//        if (liveEdges.contains( input ))
-//        {
-//            results.add( input );
-////            return;
-//        }
-//        List<Edge> next = inputToOutputEdges.get( input );
-//        if (next == null)
-//            return;
-//        else for (Edge e : next)
-//            findCurrentEdges( e, results );
-//    }
-    
-
-    /**
-     * Adds in the given set of edges, setting their height (z) to the current height. These edges
-     * may new machines etc...
-     *
-     * We assume that all edge/corners are properly connected.
-     *
-     * Assume that the area on the sweep plane remains a simple polygon...
-     */
-//    public void insertPlanAtHeight( LoopL<Corner> corners, double height )
-//    {
-//
-//        MultiMap<Edge, Corner> edges = new MultiMap();
-//
-//        for (Corner c : corners.eIterator())
-//        {
-//            edges.put( c.nextL, c );
-//            edges.put( c.prevL, c );
-//        }
-//
-//        for (Edge e : edges.keySet())
-//        {
-//            e.end.z = e.start.z = height;
-//
-//            e.currentCorners.clear();
-//
-//            liveEdges.add( e );
-//            liveCorners.add( e.start ); // e.start == e.prev.end
-//
-//            output.newFace( null, null, null );//addFace( e, null, e.profileFeatures );
-//
-//            e.currentCorners.addAll( edges.get( e ) );
-//        }
-//
-//        // after all adjustments to lines, reset the machines
-//        for ( Edge e : edges.keySet() )
-//        {
-//            e.machine.addEdge( e, this );
-//        }
-//
-//        refindAllFaceEvents();
-//
-//        validate();
-//    }
-
-    /**
-     * @depricated
-     * @param corners
-     * @param height
-     */
-//    public void insertPlanAtHeight( LoopL<Edge> edges, double height, boolean javaGenericsAreABigPileOffCrapola )
-//    {
-//        for (Edge e : edges.eIterator())
-//        {
-//            e.end.z = e.start.z = height;
-//
-//            e.currentCorners.clear();
-//
-//            liveEdges.add( e );
-//            liveCorners.add( e.start ); // e.start == e.prev.end
-//
-//            output.newFace( null, null, null );//addFace( e, null, e.profileFeatures );
-//
-//            e.currentCorners.add( e.start );
-//            e.currentCorners.add( e.end );
-//
-//        }
-//
-//        // after all adjustments to lines, reset the machines
-//        for ( Edge e : edges.eIterator() )
-//        {
-//            e.machine.addEdge( e, this );
-//        }
-//
-//        refindAllFaceEvents();
-//
-//        validate();
-//    }
-
-    /**
-     * This searches for the originating (not additional/forced step) edges that have
-     * led to the use of the target edge. Perhaps we want input edge, additional edges
-     * and a addition -> input edge map so we have findInputFrom(Edge) & findMaybeAdditionalFrom(Edge)?
-     */
-//    public Edge findOriginatingEdge( Edge target )
-//    {
-//        outer:
-//        while (target != null)
-//        {
-//            for (Edge e : inputToOutputEdges.keySet())
-//                for (Edge f : inputToOutputEdges.get( e ))
-//                    if (f == target)
-//                    {
-//                        target = e;
-//                        continue outer;
-//                    }
-//             return target;
-////                assert (target != null);
-//        }
-//        return null;
-//    }
-
-    /**
-     * Called whenever a new edge is created, with
-     * @param e
-     * @param edgeH
-     */
-//    public void registerOutputEdge( Edge old, Edge neu )
-//    {
-//        inputToOutputEdges.put( old, neu );
-//    }
-
     public static class SEC
     {
         Corner start, end;
@@ -535,170 +357,29 @@ public class Skeleton
         }
     }
 
-    /**
-     * Used for replacing one edge with a set of edges. Generally replaced by SkeletonCapUpdate
-     * for more general topological setups.
-     *
-     * For each edge given, it's naturally extrueded to the given eHeight using
-     * it's neighbouring edges ( assumes all collisions below eHeight complete).
-     * It's then replaced with a new edge, specified by the edgeCreator factory
-     *
-     */
-//    public void replaceEdges( List<Edge> toReplace, EdgeCreator edgeCreator, double eHeight )
-//    {
-//        Map<Corner, Corner> oldToNew = new LinkedHashMap();
-//
-//        LinearForm3D ceiling = new LinearForm3D( 0, 0, 1, -eHeight );
-//
-//        List<SEC> secs = new ArrayList();
-//        /**
-//         * Before we start messing with pointers, find all
-//         * corners that start a line.
-//         */
-//        for ( Edge e : toReplace )
-//        {
-//            if ( liveEdges.contains( e ) )
-//                for ( Corner start : e.currentCorners )
-//                    if ( start.nextL == e )
-//                        secs.add( new SEC( start, e ) );
-//        }
-//
-//        /**
-//         * For each section of each edge found, elevate it's corners (if
-//         * not done by a previous edge) and it.
-//         */
-//        for ( SEC sec : secs )
-//        {
-//            Corner start = sec.start, end = sec.end;
-//            Edge e = sec.edge;
-//
-//            Corner // 'high' points, ones that will form new loop
-//                    startH = elevate( start, oldToNew, ceiling ),
-//                    endH = elevate( end, oldToNew, ceiling );
-//
-//            startH.nextC = endH;
-//            endH.prevC = startH;
-//            startH.nextL = e;
-//            endH.prevL = e;
-//
-//            List<Corner> replacementCorners = edgeCreator.getEdges( e, startH, endH );
-//
-//            if ( replacementCorners != null )
-//            {
-//                assert ( replacementCorners.get( 0 ) == startH );
-//                assert ( replacementCorners.get( replacementCorners.size() - 1 ) == endH );
-//
-//                /**
-//                 * If we are using the start/end points (the first/last line segment is
-//                 * not e), then wire in startH, endH. Otherwise ignore first and last
-//                 * points in the replacements and wire between start and end.
-//                 *
-//                 * bit of a mess...should be refactored and some of of the workings
-//                 * moved to the EdgeCreator...
-//                 */
-//
-//                boolean useStartH = startH.nextL != e;
-//                if ( useStartH ) // really using startH
-//                {
-//                    liveCorners.add( startH );
-//                    liveCorners.remove( start );
-//
-//                    startH.prevC.nextC = startH;
-//                    startH.prevL.currentCorners.remove( start );
-//                    startH.prevL.currentCorners.add( startH );
-//
-//                    output.addOutputSideTo ( start, startH, start.prevL, e );
-//
-//                    e.currentCorners.remove( start );
-//                    e.currentCorners.remove( startH );
-//                }
-//                else
-//                {
-//                    Corner first = replacementCorners.get( 1 );
-//                    first.prevC = start;
-//                    start.nextC = first;
-//                }
-//
-//                boolean useEndH = endH.prevL != e;
-//                if (useEndH) // really using endH
-//                {
-//                    liveCorners.add( endH );
-//                    liveCorners.remove( end );
-//
-//                    endH.nextC.prevC = endH;
-//
-//                    endH.nextL.currentCorners.remove( end );
-//                    endH.nextL.currentCorners.add( endH );
-//
-//                    output.addOutputSideTo ( end, endH, e, end.nextL );
-//
-//                    e.currentCorners.remove( end );
-//                    e.currentCorners.remove( endH );
-//                }
-//                else
-//                {
-//                    Corner last = replacementCorners.get( replacementCorners.size()-2 );
-//                    last.nextC = end;
-//                    end.prevC = last;
-//                }
-//
-//                replacementCorners.remove( replacementCorners.size() -1 );
-//
-//                Corner leaveE = useStartH ? startH : null;
-//                for ( Corner c : replacementCorners ) // endH removed!
-//                {
-//                    Edge edgeH = c.nextL;
-//
-//                    if (useStartH || c != startH )
-//                        liveCorners.add( c );
-//
-//                    if ( edgeH != e )
-//                    {
-//                        output.addFace( edgeH, null, edgeCreator.getFeaturesFor(edgeH) );
-//                        liveEdges.add( edgeH );
-//                        edgeH.currentCorners.clear();
-//                        inputEdges.add( edgeH );
-//
-//                        // keep a check of where each edge started from
-//                        registerOutputEdge (e, edgeH);
-////                        inputToOutputEdges.put( e, edgeH );
-//                    }
-//                    else // e == edgeH
-//                    {
-//                        if (leaveE != null)
-//                        {
-//                            output.addOutputSideTo( leaveE, c, e );
-//                        }
-//                        leaveE = c.nextC;
-//                    }
-//
-//                    if ( useStartH || c != startH )
-//                        edgeH.currentCorners.add( c );
-//                    if ( useEndH || c.nextC != endH )
-//                        edgeH.currentCorners.add( c.nextC );
-//                }
-//                if (leaveE != null && useEndH)
-//                    output.addOutputSideTo( leaveE, endH, e );
-//
-//                for ( Corner c : replacementCorners ) // endH removed!
-//                    c.nextL.machine.addEdge( c.nextL, this ); // if new calculates linearform
-//            }
-//        }
-//
-//        /**
-//         * Pointers may have been removed by previous/next edges
-//         */
-//        Iterator<Edge> eit = liveEdges.iterator();
-//        while (eit.hasNext())
-//            if (eit.next().currentCorners.size() == 0)
-//                eit.remove();
-//
-//        refindAllFaceEvents();
-//
-//        validate();
-//    }
+    public void capAt (double cap) {
+    	
+    	  qu.add(new HeightEvent() {
 
+    		  public double getHeight() {
+                  return cap;
+              }
 
+              public boolean process(Skeleton skel) {
+            	  
+                  SkeletonCapUpdate capUpdate = new SkeletonCapUpdate(skel);
+
+                   output.addNonSkeletonOutputFace( capUpdate.getCap(cap), new Vector3d(0,0,1) );
+                  
+                  // this call should remove all geometry, and cap the remainder...?
+                  capUpdate.update(new LoopL<>(), new SetCorrespondence<Corner, Corner>(), new DHash<Corner, Corner>());
+                  DebugDevice.dump("post cap dump", skel);
+
+                  return true;
+              }
+          });
+    }
+    
     public void refindAllFaceEventsLater()
     {
         refindFaceEvents = true;
@@ -728,26 +409,6 @@ public class Skeleton
         // this shouldn't do anything
         context.processHoriz( this );
     }
-
-//    private Corner elevate( Corner start, Map<Corner, Corner> oldToNew, LinearForm3D ceiling )
-//    {
-//        Corner startH;
-//        if ( oldToNew.containsKey( start ) )
-//            startH = oldToNew.get( start );
-//        else
-//        {
-//            Tuple3d res = ceiling.collide( start.nextL.linearForm, start.prevL.linearForm );
-//            startH = new Corner( res );
-//
-//            oldToNew.put( start, startH );
-//            //  don't insert into loop, but copy all ptrs
-//            startH.prevC = start.prevC;
-//            startH.nextC = start.nextC;
-//            startH.prevL = start.prevL;
-//            startH.nextL = start.nextL;
-//        }
-//        return startH;
-//    }
 
     /**
      * Debug!
