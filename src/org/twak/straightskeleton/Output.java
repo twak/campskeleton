@@ -119,7 +119,7 @@ public class Output
      */
 
 
-    public void addNonSkeletonOutputFace( LoopL<Point3d> points, Vector3d norm )
+    public void addNonSkeletonOutputFace( LoopL<? extends Point3d> points, Vector3d norm )
     {
 
         if (points.size() > 1)
@@ -141,9 +141,9 @@ public class Output
 
     public static class LoopNormal
     {
-        public LoopL<Point3d> loopl;
+        public LoopL<? extends Point3d> loopl;
         public Vector3d norm;
-        public LoopNormal (LoopL<Point3d> loopl, Vector3d norm)
+        public LoopNormal (LoopL<? extends Point3d> loopl, Vector3d norm)
         {
             this.loopl = loopl;
             this.norm = norm;
