@@ -24,6 +24,7 @@ import org.twak.utils.DHash;
 import org.twak.utils.LinearForm3D;
 import org.twak.utils.Loop;
 import org.twak.utils.LoopL;
+import org.twak.utils.Loopable;
 import org.twak.utils.ManyManyMap;
 import org.twak.utils.MultiMap;
 import org.twak.utils.SetCorrespondence;
@@ -369,12 +370,28 @@ public class Skeleton
             	  
                   SkeletonCapUpdate capUpdate = new SkeletonCapUpdate(skel);
 
-                   output.addNonSkeletonOutputFace( capUpdate.getCap(cap), new Vector3d(0,0,1) );
                   
-                  // this call should remove all geometry, and cap the remainder...?
+                  LoopL<Corner> flatTop = capUpdate.getCap(cap);
+                  
                   capUpdate.update(new LoopL<>(), new SetCorrespondence<Corner, Corner>(), new DHash<Corner, Corner>());
+                  
+                  LoopL<Point3d> togo =
+                          flatTop.new Map<Point3d>()
+                          {
+                              @Override
+                              public Point3d map( Loopable<Corner> input )
+                              {
+                                  return new Point3d( input.get().x, input.get().y, input.get().z );
+                              }
+                          }.run();
+                          skel.output.addNonSkeletonOutputFace( togo, new Vector3d( 0, 0, 1 ) );
+                          
+                  
                   DebugDevice.dump("post cap dump", skel);
 
+                  skel.qu.clearFaceEvents();
+                  skel.qu.clearOtherEvents();
+                  
                   return true;
               }
           });

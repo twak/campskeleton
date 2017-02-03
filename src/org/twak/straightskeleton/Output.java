@@ -121,9 +121,6 @@ public class Output
 
     public void addNonSkeletonOutputFace( LoopL<? extends Point3d> points, Vector3d norm )
     {
-
-        if (points.size() > 1)
-            System.out.println("here bos");
         nonSkelFaces.add (new LoopNormal(points, norm));
     }
     public void addNonSkeletonOutputFace2( LoopL<Point3d> points, Vector3d norm )

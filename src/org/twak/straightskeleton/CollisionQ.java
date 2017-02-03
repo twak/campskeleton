@@ -107,7 +107,7 @@ public class CollisionQ
                 EdgeCollision higher = faceEvents.peek();
                 if (higher == null)
                     break;
-                if (higher.getHeight() - height <  0.00001 )//00001) // ephemeral random constant #34 was 0.00001
+                if (higher.getHeight() - height <  0.00001 )// ephemeral random constant #34 was 0.00001
                 {
                     faceEvents.poll(); //same as higher
 

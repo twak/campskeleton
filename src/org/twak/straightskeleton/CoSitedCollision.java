@@ -47,7 +47,6 @@ public class CoSitedCollision
         edges.add( ec );
     }
 
-
     /**
      * New routine
      * @return true if valid chains found at this site
