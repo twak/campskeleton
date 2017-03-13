@@ -13,6 +13,7 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
 
+import org.twak.straightskeleton.Output.Face;
 import org.twak.utils.AngleAccumulator;
 import org.twak.utils.Cache;
 import org.twak.utils.ConsecutiveTriples;
@@ -537,6 +538,8 @@ public class Output
                 return left;
             throw new Error();
         }
+        
+        
 
         private void setLeft( Point3d start, Loopable<SharedEdge> ctxLeft, Face left )
         {
@@ -557,6 +560,24 @@ public class Output
         {
             return "{" + start + " to " + end + "}";
         }
+
+		public SharedEdge getAdjEdge( Face f, boolean next ) {
+			
+			if ( f == left ) {
+
+				if ( cLeft == null )
+					return null;
+
+				return next ? cLeft.getNext().get() : cLeft.getPrev().get();
+				
+			} else {
+				if ( cRight == null )
+					return null;
+
+				return next ? cRight.getNext().get() : cRight.getPrev().get();
+			}
+			
+		}
     }
 
     public Output dupeEdgesOnly()
