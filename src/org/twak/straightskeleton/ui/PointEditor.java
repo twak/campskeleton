@@ -148,8 +148,8 @@ public class PointEditor extends JComponent
         MouseAdapter ap = new EditorMouseAdapter(); // hard works happens in here
 
          ma = new PanMouseAdaptor( this ); // pan/scan convertor
-         ma.button = MouseEvent.BUTTON3;
-
+//         ma.button = MouseEvent.BUTTON3;
+         
         createInitial();
 
         addMouseListener( ap );

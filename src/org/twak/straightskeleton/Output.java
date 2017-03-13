@@ -85,7 +85,7 @@ public class Output
 
         SharedEdge se= createEdge( leadingCorner, leadingCorner.nextC );
         face.definingSE.add( se );
-        se.setLeft( leadingCorner, face );
+        se.setLeft( leadingCorner, null, face );
         face.results.add( se.start, se.end );
         se.features.add( isCreatedHorizontal );
 
@@ -462,9 +462,8 @@ public class Output
                 for (Loopable<Point3d> loopable : ptLoop.loopableIterator())
                 {
                     SharedEdge e = createEdge( loopable.get(), loopable.getNext().get() );
-                    e.setLeft (loopable.get(), this );
-
-                    loop.append( e );
+                    
+                    e.setLeft (loopable.get(), loop.append( e ), this );
                 }
             }
         }
@@ -474,6 +473,7 @@ public class Output
     {
         Point3d start, end;
         public Face left, right;
+        public Loopable<SharedEdge> cLeft, cRight;
         Set <Tag> features = new HashSet<>();
 
         private SharedEdge( Point3d start, Point3d end )
@@ -538,16 +538,20 @@ public class Output
             throw new Error();
         }
 
-        private void setLeft( Point3d start, Face left )
+        private void setLeft( Point3d start, Loopable<SharedEdge> ctxLeft, Face left )
         {
-            if (this.start.equals( start) )
+            if (this.start.equals( start) ) {
                 this.left = left;
-            else if (this.end.equals( start) )
+                this.cLeft = ctxLeft;
+            }
+            else if (this.end.equals( start) ) {
                 this.right = left;
+                this.cRight = ctxLeft;
+            }
             else
                 throw new Error();
         }
-
+        
         @Override
         public String toString()
         {
@@ -579,7 +583,7 @@ public class Output
                 for (SharedEdge se : old.definingSE)
                 {
                     SharedEdge neu = new SharedEdge( se.start, se.end);
-                    neu.setLeft( se.start, face);
+                    neu.setLeft( se.start, null, face);
                     face.definingSE.add( neu );
                 }
 
