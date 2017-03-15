@@ -13,7 +13,6 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
 
-import org.twak.straightskeleton.Output.Face;
 import org.twak.utils.AngleAccumulator;
 import org.twak.utils.Cache;
 import org.twak.utils.ConsecutiveTriples;
@@ -45,7 +44,7 @@ public class Output
     }
 
     /**
-     * One edge may start in two locations at the same time. To accomodate this, you call
+     * One edge may start in two locations at the same time. To accommodate this, you call
      * newEdge once per new edge, then new Defining Segment for each corner that references that
      * edge.
      * 
@@ -120,14 +119,53 @@ public class Output
      */
 
 
-    public void addNonSkeletonOutputFace( LoopL<? extends Point3d> points, Vector3d norm )
-    {
-        nonSkelFaces.add (new LoopNormal(points, norm));
-    }
-    public void addNonSkeletonOutputFace2( LoopL<Point3d> points, Vector3d norm )
-    {
-        nonSkelFaces2.add (new LoopNormal(points, norm));
-    }
+	public void addNonSkeletonOutputFace( LoopL<? extends Point3d> points, Vector3d norm ) {
+		nonSkelFaces.add( new LoopNormal( points, norm ) );
+	}
+
+	
+	public void addNonSkeletonSharedEdges(Tag...profileTags) {
+		
+		for (LoopNormal ln : nonSkelFaces) {
+			
+			for (Loop<? extends Point3d> loop : ln.loopl ) {
+				
+				Face f = new Face();
+				for (Tag t : profileTags)
+					f.profile.add(t);
+				
+				Loop<SharedEdge> seloop = new Loop<>();
+				f.edges.add(seloop);
+				f.points = new LoopL<>();
+				Loop<Point3d> fLoop = new Loop<>();
+				f.points.add(fLoop);
+				
+				for ( Loopable<? extends Point3d> loopable : loop.loopableIterator() ) {
+					
+                    SharedEdge e = createEdge( loopable.get(), loopable.getNext().get() );
+                    
+                    fLoop.append( loopable.get() );
+                    
+                    if (f.definingSE.isEmpty()) {
+                    	f.definingSE.add(e);
+                    	f.edge = new Edge( new Corner (e.start), new Corner (e.end));
+                    	Vector3d dir = f.edge.direction();
+                    	dir.normalize();
+                    	f.edge.uphill = new Vector3d( -dir.y, dir.x, 0 );
+                    }
+                    
+                    e.setLeft (loopable.get(), seloop.append( e ), f );
+                    faces.put( new Corner( loopable.get()), f );
+				}
+
+			}
+			
+		}
+	}
+	
+	public void addNonSkeletonOutputFace2( LoopL<Point3d> points, Vector3d norm ) {
+		nonSkelFaces2.add( new LoopNormal( points, norm ) );
+	}
 
     public void setParent( Corner neu, Corner old )
     {
@@ -489,7 +527,8 @@ public class Output
                 return end;
             else if (ref == right)
                 return start;
-            throw new Error();
+            
+            return null;
         }
 
         public Point3d getEnd (Face ref)
@@ -498,7 +537,8 @@ public class Output
                 return start;
             else if (ref == right)
                 return end;
-            throw new Error();
+            
+            return null;
         }
 
         /**
@@ -536,7 +576,9 @@ public class Output
                 return right;
             else if ( ref == right )
                 return left;
-            throw new Error();
+            
+            System.err.println("bad face in getOther");
+            return null;
         }
         
         
@@ -577,6 +619,17 @@ public class Output
 				return next ? cRight.getNext().get() : cRight.getPrev().get();
 			}
 			
+		}
+
+		public Vector3d dir( Face f ) {
+			
+			Point3d p = getEnd( f ), ps = getStart(f);
+			if (p == null || ps == null)
+				return null;
+			
+			Vector3d out = new Vector3d( p );
+			out.sub (ps);
+			return out;
 		}
     }
 
