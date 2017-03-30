@@ -129,10 +129,16 @@ public class HorizontalHeightEvent extends DirectionHeightEvent
             skel.output.newDefiningSegment( e.start );
             baseCornerToOldFace.put( baseCorner, e.start );
 
+            e.uphill = e.direction();
+            e.uphill.normalize();
+            e.uphill.set( -e.uphill.y, e.uphill.x, 0 );
+            
+            
             for (SharedEdge se : f.edges.eIterator())
             {
                 Tuple3d start = se.getStart( f ), end = se.getEnd( f );
-                skel.output.addOutputSideTo( false, new Point3d (start.x, start.y, height), new Point3d (end.x, end.y, height), e ); // it is unclear if these should be parent or child edges
+                skel.output.addOutputSideTo( false, new Point3d (start.x, start.y, height),
+                		new Point3d (end.x, end.y, height), e ); // it is unclear if these should be parent or child edges
             }
 //            skel.output.faces.get(e.start).edge
         }
