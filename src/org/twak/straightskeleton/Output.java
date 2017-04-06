@@ -285,6 +285,7 @@ public class Output
                     }
                     
 //                    System.out.println( "didn't find faces on " + face.definingSE );
+//                    new GraphMapDebug( face.results );
 //                    System.out.println( face.results );
                     continue edge; 
                 }
