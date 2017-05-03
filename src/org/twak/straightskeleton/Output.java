@@ -13,6 +13,7 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
 
+import org.twak.straightskeleton.Output.Face;
 import org.twak.utils.AngleAccumulator;
 import org.twak.utils.Cache;
 import org.twak.utils.ConsecutiveTriples;
@@ -510,7 +511,7 @@ public class Output
 
     public static class SharedEdge
     {
-        Point3d start, end;
+        public Point3d start, end;
         public Face left, right;
         public Loopable<SharedEdge> cLeft, cRight;
         Set <Tag> features = new HashSet<>();
@@ -630,6 +631,16 @@ public class Output
 			Vector3d out = new Vector3d( p );
 			out.sub (ps);
 			return out;
+		}
+
+		public Face leftFromStart(Point3d x) {
+			
+			if (x.equals(start))
+				return left;
+			else if (x.equals(end) )
+				return right;
+			else
+				return null;
 		}
     }
 
