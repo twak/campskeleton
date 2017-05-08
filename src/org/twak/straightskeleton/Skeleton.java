@@ -25,6 +25,7 @@ import org.twak.utils.LinearForm3D;
 import org.twak.utils.Loop;
 import org.twak.utils.LoopL;
 import org.twak.utils.Loopable;
+import org.twak.utils.Loopz;
 import org.twak.utils.ManyManyMap;
 import org.twak.utils.MultiMap;
 import org.twak.utils.SetCorrespondence;
@@ -357,8 +358,17 @@ public class Skeleton
             this.edge = edge;
         }
     }
+    
+    
+    public interface HeresTheArea {
+    	public void heresTheArea(double area);
+    }
 
     public void capAt (double cap) {
+    	capAt (cap, null);
+    	
+    }
+    public void capAt (double cap, HeresTheArea hta) {
     	
     	  qu.add(new HeightEvent() {
 
@@ -386,7 +396,9 @@ public class Skeleton
                           }.run();
                           skel.output.addNonSkeletonOutputFace( togo, new Vector3d( 0, 0, 1 ) );
                           
-                  
+                          if (hta != null)
+                        	  hta.heresTheArea( Loopz.area3( togo ) );
+                          
                   DebugDevice.dump("post cap dump", skel);
 
                   skel.qu.clearFaceEvents();
