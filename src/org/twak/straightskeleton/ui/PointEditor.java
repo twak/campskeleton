@@ -123,16 +123,27 @@ public class PointEditor extends JComponent
         Point2d mean = new Point2d();
         int count = 0;
 
+        
+        double minX = Double.MAX_VALUE, maxX = -Double.MAX_VALUE;
+        
         for ( Loop<Bar> e2 : edges )
             for ( Bar e : e2 )
             {
                 mean.x += e.start.x;
                 mean.y += e.start.y;
+                
+				maxX = Math.max( maxX, e.start.x );
+				minX = Math.min( minX, e.start.x );
+                
                 count++;
             } // ignores final point :P
 
-        mean.scale( 1/(double)count );
-        centerView( new Point( (int) mean.x, (int) mean.y ) );
+        if (count > 0) {
+        	mean.scale( 1/(double)count );
+        	centerView( new Point( (int) mean.x, (int) mean.y ) );
+//        	ma.zoomFromWidth( maxX-minX );
+        }
+        
     }
 
 
