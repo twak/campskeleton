@@ -10,7 +10,7 @@ there's a primative gui interface. [video](http://www.youtube.com/watch?v=2twcln
 
 main class is [org.twak.straightskeleton.debug.Main](https://github.com/twak/campskeleton/blob/master/src/org/twak/straightskeleton/debug/Main.java). 
 
-[example usage](https://github.com/twak/campskeleton/blob/wiki/PageName.md)
+[example code usage](https://github.com/twak/campskeleton/blob/wiki/PageName.md)
 
 
 i believe i own the license to all code in this release, hasn't been vetted for a while tho, so go carefully.
