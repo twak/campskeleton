@@ -4,7 +4,7 @@ allows negative weights for offsetting in either direction. implementation of [F
 
 [![](http://farm5.static.flickr.com/4006/4709590538_76e5c9ce6f.jpg)](http://www.flickr.com/photos/twak/4709590538/)
 
-The command 'mvn compile install' should grab all deps, build, and install into your local maven.
+requires [my jutils](https://github.com/twak/jutils) to be installed ('mvn compile install'). then the command 'mvn compile install' should grab all deps, build, and install into your local maven.
 
 there's a primative gui interface. [video](http://www.youtube.com/watch?v=2twcln3_7Y8). use left mouse button to move points and control-click to add new points.
 
