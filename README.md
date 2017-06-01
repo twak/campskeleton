@@ -10,12 +10,10 @@ run the [jar](https://github.com/twak/campskeleton/blob/master/campskeleton-0.0.
 java -jar siteplan-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 ```
 
-requires [my jutils](https://github.com/twak/jutils) to be installed (with 'mvn compile install'). then the command 'mvn package' should build a jar.
-
 there's a primative gui interface. [video](http://www.youtube.com/watch?v=2twcln3_7Y8). use left mouse button to move points and control-click to add new points.
+
+to build, requires [my jutils](https://github.com/twak/jutils) to be installed (with 'mvn compile install'). then the command 'mvn package' should build a jar.
 
 main UI class is [org.twak.camp.debug.CampSkeleton](https://github.com/twak/campskeleton/blob/master/src/org/twak/camp/debug/CampSkeleton.java). 
 
 [example code usage](https://github.com/twak/campskeleton/blob/wiki/headless.md)
-
-i believe i own the license to all code in this release, hasn't been vetted for a while tho, so go carefully.
