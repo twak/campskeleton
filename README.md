@@ -10,6 +10,6 @@ there's a primative gui interface. [video](http://www.youtube.com/watch?v=2twcln
 
 main UI class is [org.twak.camp.debug.CampSkeleton](https://github.com/twak/campskeleton/blob/master/src/org/twak/camp/debug/CampSkeleton.java). 
 
-[example code usage](https://github.com/twak/campskeleton/blob/wiki/PageName.md)
+[example code usage](https://github.com/twak/campskeleton/blob/wiki/headless.md)
 
 i believe i own the license to all code in this release, hasn't been vetted for a while tho, so go carefully.
