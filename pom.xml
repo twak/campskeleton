@@ -4,6 +4,13 @@
 	<groupId>org.twak.campskeleton</groupId>
 	<artifactId>campskeleton</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>../jutils</module>
+	</modules>
+
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
@@ -23,6 +30,21 @@
 					<target />
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>org.twak.straightskeleton.debug.CampSkeleton</mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
@@ -32,13 +54,13 @@
 			<artifactId>utils</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>javax.vecmath</groupId>
 			<artifactId>vecmath</artifactId>
 			<version>1.5.2</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/gov.nist.math/jama -->
 		<dependency>
 			<groupId>gov.nist.math</groupId>
