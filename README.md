@@ -8,7 +8,7 @@ requires [my jutils](https://github.com/twak/jutils) to be installed (with 'mvn 
 
 there's a primative gui interface. [video](http://www.youtube.com/watch?v=2twcln3_7Y8). use left mouse button to move points and control-click to add new points.
 
-main UI class is [org.twak.straightskeleton.debug.Main](https://github.com/twak/campskeleton/blob/master/src/org/twak/straightskeleton/debug/Main.java). 
+main UI class is [org.twak.camp.debug.CampSkeleton](https://github.com/twak/campskeleton/blob/master/src/org/twak/camp/debug/CampSkeleton.java). 
 
 [example code usage](https://github.com/twak/campskeleton/blob/wiki/PageName.md)
 
