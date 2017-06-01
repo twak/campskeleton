@@ -5,11 +5,12 @@
 	<artifactId>campskeleton</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 
-	<modules>
-		<module>../jutils</module>
-	</modules>
+	<properties>
+      	<maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>  
+	</properties>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -18,6 +19,7 @@
 				<directory>src</directory>
 				<excludes>
 					<exclude>**/*.java</exclude>
+					<exclude>**/*.form</exclude>
 				</excludes>
 			</resource>
 		</resources>
@@ -36,7 +38,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>org.twak.straightskeleton.debug.CampSkeleton</mainClass>
+							<mainClass>org.twak.camp.debug.CampSkeleton</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
@@ -49,6 +51,7 @@
 	</build>
 
 	<dependencies>
+	
 		<dependency>
 			<groupId>org.twak.utils</groupId>
 			<artifactId>utils</artifactId>
