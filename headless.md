@@ -1,6 +1,6 @@
 # Headless example #
 
-(src)[https://github.com/twak/campskeleton/blob/master/src/org/twak/camp/debug/Example.java]. Define Points counter clockwise.
+[src](https://github.com/twak/campskeleton/blob/master/src/org/twak/camp/debug/Example.java). Define Points counter clockwise.
 Output is in 3d, discard the last coordinate (z) to project back to the 2d input space.
 
 ```
