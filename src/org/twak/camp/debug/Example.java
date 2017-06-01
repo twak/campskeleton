@@ -13,13 +13,13 @@ public class Example {
 	
 	public static void main( String[] args ) {
 		Corner c1 = new Corner( 0, 0 ), 
-				c2 = new Corner( 100, -100 ), 
-				c3 = new Corner( 100, 0 );
+			   c2 = new Corner( 100, -100 ), 
+			   c3 = new Corner( 100, 0 );
 
 		Machine speed1 = new Machine(Math.PI/4),
 				speed2 = new Machine(Math.PI/3);
 
-		Loop<Edge> loop1 = new Loop();
+		Loop<Edge> loop1 = new Loop<Edge>();
 
 		
 		Edge e1 = new Edge( c1, c2 ),
