@@ -14,10 +14,10 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
 
 import org.twak.camp.debug.DebugDevice;
-import org.twak.utils.DHash;
-import org.twak.utils.Line3D;
-import org.twak.utils.LoopL;
-import org.twak.utils.SetCorrespondence;
+import org.twak.utils.collections.DHash;
+import org.twak.utils.collections.LoopL;
+import org.twak.utils.collections.SetCorrespondence;
+import org.twak.utils.geom.Line3D;
 
 /**
  * Arbitrary topology update of the corners/edges on the sweep plane

@@ -10,9 +10,9 @@ import javax.vecmath.Tuple3d;
 import org.twak.camp.ui.Bar;
 import org.twak.utils.Cache;
 import org.twak.utils.LContext;
-import org.twak.utils.Loop;
-import org.twak.utils.LoopL;
-import org.twak.utils.Loopable;
+import org.twak.utils.collections.Loop;
+import org.twak.utils.collections.LoopL;
+import org.twak.utils.collections.Loopable;
 
 /**
  *

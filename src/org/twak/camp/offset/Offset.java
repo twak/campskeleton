@@ -2,8 +2,8 @@ package org.twak.camp.offset;
 
 
 import org.twak.camp.Corner;
-import org.twak.utils.LoopL;
-import org.twak.utils.ManyManyMap;
+import org.twak.utils.collections.LoopL;
+import org.twak.utils.collections.ManyManyMap;
 
 /**
  *

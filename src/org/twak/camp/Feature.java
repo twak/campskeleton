@@ -12,7 +12,7 @@ import javax.swing.JRadioButtonMenuItem;
 
 import org.twak.camp.ui.Marker;
 import org.twak.camp.ui.Marker.Type;
-import org.twak.utils.Rainbow;
+import org.twak.utils.ui.Rainbow;
 
 /**
  * "Tags" for output properties

@@ -18,9 +18,9 @@ import org.twak.camp.Edge;
 import org.twak.camp.Output;
 import org.twak.camp.Skeleton;
 import org.twak.utils.Cache;
-import org.twak.utils.Loop;
-import org.twak.utils.LoopL;
-import org.twak.utils.Loopable;
+import org.twak.utils.collections.Loop;
+import org.twak.utils.collections.LoopL;
+import org.twak.utils.collections.Loopable;
 
 /**
  * @author twak

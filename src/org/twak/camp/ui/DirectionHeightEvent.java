@@ -14,8 +14,8 @@ import org.twak.camp.SkeletonCapUpdate;
 import org.twak.camp.Tag;
 import org.twak.camp.Output.Face;
 import org.twak.camp.debug.DebugDevice;
-import org.twak.utils.DHash;
-import org.twak.utils.LoopL;
+import org.twak.utils.collections.DHash;
+import org.twak.utils.collections.LoopL;
 
 public class DirectionHeightEvent implements HeightEvent
 {

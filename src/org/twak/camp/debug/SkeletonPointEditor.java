@@ -26,9 +26,9 @@ import org.twak.camp.Output.Face;
 import org.twak.camp.ui.Bar;
 import org.twak.camp.ui.PointEditor;
 import org.twak.utils.LContext;
-import org.twak.utils.Loop;
-import org.twak.utils.LoopL;
-import org.twak.utils.Loopable;
+import org.twak.utils.collections.Loop;
+import org.twak.utils.collections.LoopL;
+import org.twak.utils.collections.Loopable;
 
 /**
  *

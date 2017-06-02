@@ -3,9 +3,9 @@ package org.twak.camp.offset;
 import java.util.Set;
 
 import org.twak.camp.Corner;
-import org.twak.utils.DHash;
-import org.twak.utils.LoopL;
-import org.twak.utils.SetCorrespondence;
+import org.twak.utils.collections.DHash;
+import org.twak.utils.collections.LoopL;
+import org.twak.utils.collections.SetCorrespondence;
 
 /**
  * The output of an offset surface only knows about corresponding edges, not corresponding corners. Given

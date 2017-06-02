@@ -19,11 +19,11 @@ import org.twak.camp.offset.OffsetSkeleton;
 import org.twak.camp.ui.Bar;
 import org.twak.camp.ui.PointEditor;
 import org.twak.utils.Cache;
-import org.twak.utils.ConsecutivePairs;
 import org.twak.utils.LContext;
-import org.twak.utils.Loop;
-import org.twak.utils.LoopL;
 import org.twak.utils.Pair;
+import org.twak.utils.collections.ConsecutivePairs;
+import org.twak.utils.collections.Loop;
+import org.twak.utils.collections.LoopL;
 
 /**
  *

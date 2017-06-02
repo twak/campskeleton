@@ -3,7 +3,8 @@ package org.twak.camp;
 import java.awt.Color;
 import java.util.Comparator;
 import java.util.List;
-import org.twak.utils.Rainbow;
+
+import org.twak.utils.ui.Rainbow;
 
 /**
  * "Tags" for output properties of faces
