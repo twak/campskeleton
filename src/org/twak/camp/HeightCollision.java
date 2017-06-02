@@ -11,10 +11,10 @@ import java.util.Set;
 import javax.vecmath.Tuple3d;
 
 import org.twak.camp.debug.DebugDevice;
-import org.twak.utils.CloneConfirmIterator;
-import org.twak.utils.ConsecutivePairs;
-import org.twak.utils.LinearForm3D;
 import org.twak.utils.Pair;
+import org.twak.utils.collections.CloneConfirmIterator;
+import org.twak.utils.collections.ConsecutivePairs;
+import org.twak.utils.geom.LinearForm3D;
 
 /**
  * A bunch of faces that collide at the same height

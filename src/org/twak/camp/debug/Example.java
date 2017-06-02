@@ -6,8 +6,8 @@ import org.twak.camp.Corner;
 import org.twak.camp.Edge;
 import org.twak.camp.Machine;
 import org.twak.camp.Output.Face;
+import org.twak.utils.collections.Loop;
 import org.twak.camp.Skeleton;
-import org.twak.utils.Loop;
 
 public class Example {
 	

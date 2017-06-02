@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
-import org.twak.utils.Line;
+
+import org.twak.utils.geom.Line;
 
 /**
  *

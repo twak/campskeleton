@@ -17,10 +17,10 @@ import org.twak.camp.Output;
 import org.twak.camp.Skeleton;
 import org.twak.camp.Output.Face;
 import org.twak.camp.ui.DirectionHeightEvent;
-import org.twak.utils.LoopL;
-import org.twak.utils.Loopable;
-import org.twak.utils.ManyManyMap;
-import org.twak.utils.SetCorrespondence;
+import org.twak.utils.collections.LoopL;
+import org.twak.utils.collections.Loopable;
+import org.twak.utils.collections.ManyManyMap;
+import org.twak.utils.collections.SetCorrespondence;
 
 /**
  *

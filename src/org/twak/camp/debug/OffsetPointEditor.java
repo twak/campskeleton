@@ -15,8 +15,8 @@ import org.twak.camp.Machine;
 import org.twak.camp.Skeleton;
 import org.twak.camp.ui.Bar;
 import org.twak.utils.Cache;
-import org.twak.utils.Loop;
-import org.twak.utils.LoopL;
+import org.twak.utils.collections.Loop;
+import org.twak.utils.collections.LoopL;
 
 /**
  *

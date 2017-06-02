@@ -2,7 +2,8 @@ package org.twak.camp;
 
 
 import javax.vecmath.Point3d;
-import org.twak.utils.LinearForm3D;
+
+import org.twak.utils.geom.LinearForm3D;
 
 /**
  *

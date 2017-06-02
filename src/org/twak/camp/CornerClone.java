@@ -6,10 +6,10 @@
 package org.twak.camp;
 
 import org.twak.utils.Cache;
-import org.twak.utils.DHash;
-import org.twak.utils.Loop;
-import org.twak.utils.LoopL;
-import org.twak.utils.SetCorrespondence;
+import org.twak.utils.collections.DHash;
+import org.twak.utils.collections.Loop;
+import org.twak.utils.collections.LoopL;
+import org.twak.utils.collections.SetCorrespondence;
 
 /**
  *

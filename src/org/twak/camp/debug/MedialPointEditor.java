@@ -21,6 +21,7 @@ import org.twak.camp.Output;
 import org.twak.camp.ui.Bar;
 import org.twak.camp.ui.PointEditor;
 import org.twak.utils.*;
+import org.twak.utils.collections.Loop;
 
 public class MedialPointEditor extends PointEditor
 {

@@ -14,15 +14,15 @@ import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
 
 import org.twak.camp.Output.Face;
-import org.twak.utils.AngleAccumulator;
 import org.twak.utils.Cache;
-import org.twak.utils.ConsecutiveTriples;
-import org.twak.utils.GraphMap;
 import org.twak.utils.IdentityLookup;
-import org.twak.utils.Loop;
-import org.twak.utils.LoopL;
-import org.twak.utils.Loopable;
 import org.twak.utils.Triple;
+import org.twak.utils.collections.ConsecutiveTriples;
+import org.twak.utils.collections.Loop;
+import org.twak.utils.collections.LoopL;
+import org.twak.utils.collections.Loopable;
+import org.twak.utils.geom.AngleAccumulator;
+import org.twak.utils.geom.GraphMap;
 
 /**
  * @author twak

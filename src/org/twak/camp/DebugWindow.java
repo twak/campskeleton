@@ -12,8 +12,8 @@ import javax.vecmath.Point2d;
 
 import org.twak.camp.ui.*;
 import org.twak.utils.Cache;
-import org.twak.utils.Loop;
-import org.twak.utils.LoopL;
+import org.twak.utils.collections.Loop;
+import org.twak.utils.collections.LoopL;
 
 /**
  *

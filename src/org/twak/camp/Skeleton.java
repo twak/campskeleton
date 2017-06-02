@@ -19,16 +19,16 @@ import javax.vecmath.Vector3d;
 import org.twak.camp.Output.Face;
 import org.twak.camp.debug.DebugDevice;
 import org.twak.utils.Cache;
-import org.twak.utils.CloneConfirmIterator;
-import org.twak.utils.DHash;
-import org.twak.utils.LinearForm3D;
-import org.twak.utils.Loop;
-import org.twak.utils.LoopL;
-import org.twak.utils.Loopable;
-import org.twak.utils.Loopz;
-import org.twak.utils.ManyManyMap;
-import org.twak.utils.MultiMap;
-import org.twak.utils.SetCorrespondence;
+import org.twak.utils.collections.CloneConfirmIterator;
+import org.twak.utils.collections.DHash;
+import org.twak.utils.collections.Loop;
+import org.twak.utils.collections.LoopL;
+import org.twak.utils.collections.Loopable;
+import org.twak.utils.collections.Loopz;
+import org.twak.utils.collections.ManyManyMap;
+import org.twak.utils.collections.MultiMap;
+import org.twak.utils.collections.SetCorrespondence;
+import org.twak.utils.geom.LinearForm3D;
 
 /**
  * to debug: does it work at all (PointEditor)

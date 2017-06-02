@@ -13,14 +13,14 @@ import javax.vecmath.Vector3d;
 
 import org.twak.camp.ui.Bar;
 import org.twak.utils.Cache;
-import org.twak.utils.ConsecutivePairs;
-import org.twak.utils.Line;
-import org.twak.utils.Line3D;
-import org.twak.utils.LinearForm3D;
-import org.twak.utils.Loop;
-import org.twak.utils.LoopL;
-import org.twak.utils.Loopable;
 import org.twak.utils.Pair;
+import org.twak.utils.collections.ConsecutivePairs;
+import org.twak.utils.collections.Loop;
+import org.twak.utils.collections.LoopL;
+import org.twak.utils.collections.Loopable;
+import org.twak.utils.geom.Line;
+import org.twak.utils.geom.Line3D;
+import org.twak.utils.geom.LinearForm3D;
 
 /**
  * note: the defn of weight here is a little strange, can

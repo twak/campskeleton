@@ -4,8 +4,8 @@ import org.twak.camp.Corner;
 import org.twak.camp.Edge;
 import org.twak.camp.Machine;
 import org.twak.camp.OffsetSkeleton;
-import org.twak.utils.Loop;
-import org.twak.utils.LoopL;
+import org.twak.utils.collections.Loop;
+import org.twak.utils.collections.LoopL;
 
 public class TestBasic {
 //	@Test

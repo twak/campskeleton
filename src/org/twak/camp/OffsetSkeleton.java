@@ -10,11 +10,11 @@ import java.util.Set;
 
 import org.twak.camp.Output.Face;
 import org.twak.camp.ui.DirectionHeightEvent;
-import org.twak.utils.DHash;
-import org.twak.utils.Loop;
-import org.twak.utils.LoopL;
-import org.twak.utils.ManyManyMap;
-import org.twak.utils.SetCorrespondence;
+import org.twak.utils.collections.DHash;
+import org.twak.utils.collections.Loop;
+import org.twak.utils.collections.LoopL;
+import org.twak.utils.collections.ManyManyMap;
+import org.twak.utils.collections.SetCorrespondence;
 
 /**
  * input - given in constructor
