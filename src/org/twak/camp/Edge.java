@@ -13,12 +13,12 @@ import javax.vecmath.Vector3d;
 
 import org.twak.camp.ui.Bar;
 import org.twak.utils.Cache;
+import org.twak.utils.Line;
 import org.twak.utils.Pair;
 import org.twak.utils.collections.ConsecutivePairs;
 import org.twak.utils.collections.Loop;
 import org.twak.utils.collections.LoopL;
 import org.twak.utils.collections.Loopable;
-import org.twak.utils.geom.Line;
 import org.twak.utils.geom.Line3D;
 import org.twak.utils.geom.LinearForm3D;
 

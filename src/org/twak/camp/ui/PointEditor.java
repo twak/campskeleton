@@ -28,13 +28,13 @@ import javax.vecmath.Tuple2d;
 import org.twak.camp.Edge;
 import org.twak.utils.Cache;
 import org.twak.utils.LContext;
+import org.twak.utils.Line;
 import org.twak.utils.Pair;
 import org.twak.utils.PanMouseAdaptor;
 import org.twak.utils.collections.ConsecutivePairs;
 import org.twak.utils.collections.Loop;
 import org.twak.utils.collections.LoopL;
 import org.twak.utils.collections.Loopable;
-import org.twak.utils.geom.Line;
 
 /**
  *

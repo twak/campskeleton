@@ -13,9 +13,9 @@ import javax.vecmath.Point3d;
 import org.twak.camp.Edge;
 import org.twak.camp.Tag;
 import org.twak.utils.Cache;
+import org.twak.utils.Line;
 import org.twak.utils.collections.Loop;
 import org.twak.utils.collections.LoopL;
-import org.twak.utils.geom.Line;
 
 /**
  * @author twak

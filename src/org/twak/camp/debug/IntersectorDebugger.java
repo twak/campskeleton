@@ -19,8 +19,8 @@ import org.twak.camp.ui.PointEditor;
 import org.twak.utils.Intersector;
 import org.twak.utils.Intersector.Collision;
 import org.twak.utils.collections.Loop;
-import org.twak.utils.geom.Line;
 import org.twak.utils.LContext;
+import org.twak.utils.Line;
 
 /**
  *
