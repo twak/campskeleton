@@ -45,7 +45,7 @@ public class WeightedPointEditor extends PointEditor
         oldBar.mould.remove( m );
         oldBar.mould.create( m, null ); // <-- this needs fixing up? hasn't been run
 
-        weights.put (oldBar, MUtils.clamp( m.distance( oldBar.start)/oldBar.start.distance( oldBar.end ), 0.1, 0.9) );
+        weights.put (oldBar, Mathz.clamp( m.distance( oldBar.start)/oldBar.start.distance( oldBar.end ), 0.1, 0.9) );
     }
 
     public WeightedPointEditor( BarSelected es )
@@ -122,7 +122,7 @@ public class WeightedPointEditor extends PointEditor
             Vector2d dir = new Vector2d (b.end);
             dir.sub(b.start);
             
-            dir.scale( MUtils.clamp( weights.get (b), 0.1, 0.9 ) );
+            dir.scale( Mathz.clamp( weights.get (b), 0.1, 0.9 ) );
             dir.add(b.start);
             m.set( dir );
 

@@ -158,7 +158,7 @@ public class MedialPointEditor extends PointEditor
                     lastMaxdist = Math.max( lastMaxdist, shortestDist );
 
                     int v = 255 - (int) (shortestDist * 255. / max);
-                    v = MUtils.clamp( v, 0, 255 );
+                    v = Mathz.clamp( v, 0, 255 );
 
                     g2.setColor( new Color( v, v, v ) );
                     g2.fillRect( x, y, 1, 1 );
