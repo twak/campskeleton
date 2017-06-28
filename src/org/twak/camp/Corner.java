@@ -20,29 +20,29 @@ import org.twak.utils.collections.Loopable;
  */
 public class Corner extends Point3d implements Iterable<Corner>
 {
-    public Edge nextL, prevL;
+	public Edge nextL, prevL;
 
-    public Corner nextC, prevC;
+	public Corner nextC, prevC;
 
-    public Corner( double x, double y, double z )
-    {
-        super(x,y,z);
-    }
+	public Corner( double x, double y, double z ) {
+		super( x, y, z );
+	}
 
-    public Corner (Tuple3d in)
-    {
-        super (in);
-    }
+	public Corner( Tuple3d in ) {
+		super( in );
+	}
 
-    public Corner( double x, double y )
-    {
-        super(x,y,0);
-    }
+	public Corner( double x, double y ) {
+		super( x, y, 0 );
+	}
 
-    public Point3d getLoc3()
-    {
-        return new Point3d (x, y, 0);
-    }
+	public Corner( Point2d p ) {
+		super( p.x, p.y, 0 );
+	}
+
+	public Point3d getLoc3() {
+		return new Point3d( x, y, 0 );
+	}
 
     /**
      * Corners (unlike point3ds) are only equal to themselves. We never move a point,
@@ -53,20 +53,10 @@ public class Corner extends Point3d implements Iterable<Corner>
      * @param t1
      * @return
      */
-    @Override
-    public boolean equals( Object t1 )
-    {
-        return this == t1;
-//        try
-//        {
-//            Corner other = (Corner )t1;
-//            return super.equals( t1 ) &&
-//                    other.nextL == nextL &&
-//                    other.prevL == prevL;
-//        }
-//        catch (ClassCastException e)
-//        { return false; }
-    }
+	@Override
+	public boolean equals( Object t1 ) {
+		return this == t1;
+	}
 
     @Override
     public String toString()
