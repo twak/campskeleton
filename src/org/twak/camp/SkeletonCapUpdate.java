@@ -17,7 +17,7 @@ import org.twak.camp.debug.DebugDevice;
 import org.twak.utils.collections.DHash;
 import org.twak.utils.collections.LoopL;
 import org.twak.utils.collections.SetCorrespondence;
-import org.twak.utils.geom.Line3D;
+import org.twak.utils.geom.Ray3d;
 
 /**
  * Arbitrary topology update of the corners/edges on the sweep plane
@@ -423,13 +423,13 @@ public class SkeletonCapUpdate
 
     static class LineProjectionComparator implements Comparator<Segment>
     {
-        Line3D line;
+        Ray3d line;
 
         public LineProjectionComparator( Point3d start, Point3d end )
         {
             Vector3d dir = new Vector3d(end);
             dir.sub( start );
-            line = new Line3D( start, dir);
+            line = new Ray3d( start, dir);
         }
 
         public int compare( Segment o1, Segment o2 )
