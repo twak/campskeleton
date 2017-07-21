@@ -18,7 +18,7 @@ import org.twak.utils.Pair;
 import org.twak.utils.Triple;
 import org.twak.utils.collections.ConsecutivePairs;
 import org.twak.utils.collections.ConsecutiveTriples;
-import org.twak.utils.geom.Line3D;
+import org.twak.utils.geom.Ray3d;
 import org.twak.utils.geom.LinearForm3D;
 
 /**
@@ -169,7 +169,7 @@ public class CoSitedCollision
                 Edge e = s.nextL;
                 
 
-                Line3D projectionLine = new Line3D (loc, e.direction() );
+                Ray3d projectionLine = new Ray3d (loc, e.direction() );
 
                 LinearForm3D ceiling = new LinearForm3D( 0, 0, 1, -loc.z );
                 // project start onto line of collisions above smash edge

@@ -19,7 +19,7 @@ import org.twak.utils.collections.ConsecutivePairs;
 import org.twak.utils.collections.Loop;
 import org.twak.utils.collections.LoopL;
 import org.twak.utils.collections.Loopable;
-import org.twak.utils.geom.Line3D;
+import org.twak.utils.geom.Ray3d;
 import org.twak.utils.geom.LinearForm3D;
 
 /**
@@ -139,7 +139,7 @@ public class Edge
     {
         Vector3d e = new Vector3d( end );
         e.sub( start );
-        Point3d p = new Line3D( start, e ).projectSegment( ept );
+        Point3d p = new Ray3d( start, e ).projectSegment( ept );
 
         if (p == null)
             return Double.MAX_VALUE;
