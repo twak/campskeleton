@@ -16,4 +16,4 @@ to build, requires [my jutils](https://github.com/twak/jutils) to be installed (
 
 main UI class is [org.twak.camp.debug.CampSkeleton](https://github.com/twak/campskeleton/blob/master/src/org/twak/camp/debug/CampSkeleton.java). 
 
-[example code usage](https://github.com/twak/campskeleton/blob/wiki/headless.md)
+[example headless code](https://github.com/twak/campskeleton/blob/wiki/headless.md)
