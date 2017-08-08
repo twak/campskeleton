@@ -153,10 +153,10 @@ public class Output
                     	Vector3d dir = f.edge.direction();
                     	dir.normalize();
                     	f.edge.uphill = new Vector3d( -dir.y, dir.x, 0 );
+                    	faces.put( new Corner( loopable.get()), f );
                     }
                     
                     e.setLeft (loopable.get(), seloop.append( e ), f );
-                    faces.put( new Corner( loopable.get()), f );
 				}
 
 			}
