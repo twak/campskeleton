@@ -17,3 +17,18 @@ to build, requires [my jutils](https://github.com/twak/jutils) to be installed (
 main UI class is [org.twak.camp.debug.CampSkeleton](https://github.com/twak/campskeleton/blob/master/src/org/twak/camp/debug/CampSkeleton.java). 
 
 [example headless code](https://github.com/twak/campskeleton/blob/wiki/headless.md)
+
+This is a [research project](http://twak.blogspot.com/2011/04/interactive-architectural-modeling-with.html) - if you use it, please cite us:
+
+<pre>
+@article{kelly2011interactive,
+  title={Interactive architectural modeling with procedural extrusions},
+  author={Kelly, Tom and Wonka, Peter},
+  journal={ACM Transactions on Graphics (TOG)},
+  volume={30},
+  number={2},
+  pages={14},
+  year={2011},
+  publisher={ACM}
+}
+</pre>
