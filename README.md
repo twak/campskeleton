@@ -1,4 +1,4 @@
-weighted straight skeleton implementation in java.
+weighted straight skeleton implementation in java. [video](http://www.youtube.com/watch?v=2twcln3_7Y8).
 
 allows negative weights for offsetting in either direction. implementation of [Felkel's](http://www.dma.fi.upm.es/mabellanas/tfcs/skeleton/html/documentacion/Straight%20Skeletons%20Implementation.pdf) algo with robustness - described [here](http://twak.blogspot.com/2009/05/engineering-weighted-straight-skeleton.html).
 
@@ -10,7 +10,7 @@ run the [jar](https://github.com/twak/campskeleton/blob/master/campskeleton-0.0.
 java -jar siteplan-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 ```
 
-there's a primative gui interface. [video](http://www.youtube.com/watch?v=2twcln3_7Y8). use left mouse button to move points and control-click to add new points.
+there's a primative gui interface. use left mouse button to move points and control-click to add new points.
 
 to build, requires [my jutils](https://github.com/twak/jutils) to be installed (with 'mvn compile install'). then the command 'mvn package' should build a jar.
 
