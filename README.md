@@ -4,7 +4,7 @@ allows negative weights for offsetting in either direction. implementation of [F
 
 [![](http://farm5.static.flickr.com/4006/4709590538_76e5c9ce6f.jpg)](http://www.flickr.com/photos/twak/4709590538/)
 
-run the [jar](https://github.com/twak/campskeleton/blob/master/campskeleton-0.0.1-SNAPSHOT-jar-with-dependencies.jar?raw=true) with
+run the [jar](https://drive.google.com/open?id=0B6r_mUgXfBLdVTRfSE04MzB2Tlk) with
 
 ```
 java -jar siteplan-0.0.1-SNAPSHOT-jar-with-dependencies.jar
