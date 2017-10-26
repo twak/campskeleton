@@ -12,7 +12,7 @@ java -jar siteplan-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 
 there's a primative gui interface. use left mouse button to move points and control-click to add new points.
 
-to build, requires [my jutils](https://github.com/twak/jutils) to be installed (with 'mvn compile install'). then the command 'mvn package' should build a jar.
+to build, requires [my jutils](https://github.com/twak/jutils) to be installed (with 'mvn install'). then the command 'mvn package' should build a jar.
 
 main UI class is [org.twak.camp.debug.CampSkeleton](https://github.com/twak/campskeleton/blob/master/src/org/twak/camp/debug/CampSkeleton.java). 
 
