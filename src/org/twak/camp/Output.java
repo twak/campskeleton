@@ -392,6 +392,8 @@ public class Output
 
     public Face getGreatestGrandParent( Face f )
     {
+    	if (f == null)
+    		return null;
         while (f.parent != null)
             f = f.parent;
         return f;
