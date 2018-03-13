@@ -51,10 +51,17 @@ public class Bar
     {
         return Math.sqrt( lengthSquared() );
     }
+
+    public Point2d project (Point2d pt ) {
+    	return toLine().project( pt, true );
+    }
+    
+    public Line toLine() {
+    	return new Line(start,end);
+    }
     
 //    public void addMarker( Marker m )
 //    {
-//        m.set( new Line (start, end).project( m, true ) );
 //        markers.add( m );
 //        m.bar = this;
 //    }
