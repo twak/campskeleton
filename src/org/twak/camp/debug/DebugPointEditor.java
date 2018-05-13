@@ -28,7 +28,7 @@ import org.twak.utils.LContext;
 import org.twak.utils.collections.Loop;
 import org.twak.utils.collections.LoopL;
 import org.twak.utils.collections.Loopable;
-import org.twak.utils.ui.Colour;
+import org.twak.utils.ui.Colourz;
 import org.twak.utils.ui.Rainbow;
 
 /**
@@ -147,7 +147,7 @@ public abstract class DebugPointEditor extends PointEditor
 //            g2.fillPolygon( pg );
 //        }
 
-        g2.setColor( Colour.transparent( Color.green, 140 ) );
+        g2.setColor( Colourz.transparent( Color.green, 140 ) );
         
         for ( Loop<Bar> e2 : edges )
             for ( Bar e : e2 )
@@ -158,7 +158,7 @@ public abstract class DebugPointEditor extends PointEditor
 
         Map<Point3d, Integer> vCount = new HashMap();
 
-        g2.setColor(Colour.transparent(Color.red, 140));
+        g2.setColor(Colourz.transparent(Color.red, 140));
         for (Loop<Corner> loop : corners)
             for (Loopable<Corner> lc : loop.loopableIterator())
             {
