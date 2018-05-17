@@ -117,6 +117,10 @@ public class Edge
         return a;
     }
     
+    public double length() {
+    	return start.distance( end );
+    }
+    
     public Vector3d direction()
     {
         Vector3d vec = new Vector3d ( this.end.x, this.end.y, 0 );
