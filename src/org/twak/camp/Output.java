@@ -580,7 +580,7 @@ public class Output
             else if ( ref == right )
                 return left;
             
-            System.err.println("bad face in getOther");
+//            System.err.println("bad face in getOther");
             return null;
         }
         
