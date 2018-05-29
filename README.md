@@ -18,7 +18,7 @@ main UI class is [org.twak.camp.debug.CampSkeleton](https://github.com/twak/camp
 
 [example headless code](https://github.com/twak/campskeleton/blob/wiki/headless.md)
 
-This is a component of a [research project](http://twak.blogspot.com/2011/04/interactive-architectural-modeling-with.html) - if you use it, please cite us:
+this is a component of a [research project](http://twak.blogspot.com/2011/04/interactive-architectural-modeling-with.html) - if you use it, please cite us:
 
 <pre>
 @article{kelly2011interactive,
