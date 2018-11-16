@@ -170,8 +170,8 @@ public class Skeleton
 
         for (Corner c : input.eIterator())
         {
-            if (c.z != 0)
-                throw new Error("Corner isn't at zero height");
+            if (c.z != 0 || c.nextL == null || c.prevL == null) // fixme: threading bug with chordatlas under openJDK11 causes npes on nextL?
+                throw new Error("Error in input");
 
             output.newDefiningSegment( c );
             liveCorners.add(c );
