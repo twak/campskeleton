@@ -149,7 +149,7 @@ public class CollisionQ
     public void addCorner( Corner toAdd, HeightCollision postProcess, boolean useCache )
     {
         // check these two edges don't share the same face
-        if ( toAdd.prevL.sameDirectedLine( toAdd.nextL ) )
+        if ( !skel.preserveParallel && toAdd.prevL.sameDirectedLine( toAdd.nextL ) )
         {
             removeCorner( toAdd );
             return;
@@ -196,18 +196,33 @@ public class CollisionQ
             }
         }
     }
+    
+    private static boolean isParallel (Edge a, Edge b) {
+    	return a.uphill.angle( b.uphill ) < 0.0001 && a.direction().angle( b.direction() ) < 0.0001;
+    }
 
     private void cornerEdgeCollision( Corner corner, Edge edge )
     {
             // check for the uphill vector of both edges being too similar (parallel edges)
-            // also rejects e == corner.nextL or corner.prevL
-            // updated to take into account vertical edges - will always have same uphill! - (so we check edge direction too)
-            if (
-                    (edge.uphill.angle( corner.prevL.uphill ) < 0.0001 && edge.direction().angle(  corner.prevL.uphill) < 0.0001 ) ||
-                    (edge.uphill.angle( corner.nextL.uphill ) < 0.0001 && edge.direction().angle(  corner.nextL.uphill) < 0.0001 ))
-                return;
-
-
+            // also rejects e == corner.nextL or corner.prevL updated to take into account vertical edges - will always have same uphill! - (so we check edge direction too)
+            
+		if ( skel.preserveParallel ) {
+//			if ( edge.start.equals( corner ) || edge.end.equals( corner ) )
+//				return;
+			
+			if ( isParallel (edge, corner.prevL) && isParallel( edge, corner.nextL ) )
+				return;
+			
+			if ( corner.nextL == edge || corner.prevL == edge)
+				return;
+			
+		} else {
+			if ( isParallel (edge, corner.prevL) || isParallel( edge, corner.nextL ) )
+//					( edge.uphill.angle( corner.prevL.uphill ) < 0.0001 && edge.direction().angle( corner.prevL.direction() ) < 0.0001 ) ||
+//				 ( edge.uphill.angle( corner.nextL.uphill ) < 0.0001 && edge.direction().angle( corner.nextL.direction() ) < 0.0001 ) )
+				return;
+		}
+    	
             Tuple3d res = null;
             try
             {
@@ -218,9 +233,15 @@ public class CollisionQ
             }
             catch ( Throwable f )
             {
-                //trying to collide parallel-ish faces, don't bother
-//                System.err.println( "didn't like colliding " + edge + " and " + corner.prevL + " and " + corner.nextL );
-                return;
+            	if (skel.preserveParallel ) {
+            		
+            		if ( corner.prevL.uphill.equals(edge.uphill) && corner.prevC.prevL.equals( edge ))
+            			res = corner.nextL.linearForm.collide( corner.prevC, corner.prevL.uphill );
+            		else if (corner.nextL.uphill.equals( edge.uphill ) && corner.nextC.nextL.equals( edge ))
+            			res = corner.prevL.linearForm.collide( corner.nextC, corner.nextL.uphill );
+            		else if (corner.nextL.uphill.equals( corner.prevL.uphill ) )
+            			res = edge.linearForm.collide( corner, corner.nextL.uphill );
+            	}
             }
 
             if ( res != null )
@@ -234,7 +255,6 @@ public class CollisionQ
                         corner.prevL,
                         corner.nextL,
                         edge);
-
 
                 if (! skel.seen.contains( ec ))
                     faceEvents.offer( ec );

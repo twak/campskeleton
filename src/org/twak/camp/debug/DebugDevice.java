@@ -29,7 +29,7 @@ public class DebugDevice
 {
     // global debug switch
     public static boolean debug; // change in reset(), below
-    static DebugDevice instance = new DebugDevice();
+    public static DebugDevice instance = new DebugDevice();
 
     public static void reset() {
         debug = false;
@@ -46,6 +46,12 @@ public class DebugDevice
         {
             this.name = name;
             this.corners = corners;
+            
+//            for (Corner c: corners.eIterator()) {
+//            	c.x += Math.random() * 1 - 0.5;
+//            	c.y += Math.random() * 1 - 0.5;
+//            }
+            
             this.output = output;
         }
 

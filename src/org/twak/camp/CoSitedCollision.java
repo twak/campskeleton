@@ -72,13 +72,13 @@ public class CoSitedCollision
 
         if (allEdges.size() < 3)
             return false;
-            // fixme: why do we add all starting corners? just to filter them later?
-        Set<Corner> edgeStarts = new LinkedHashSet();
+        
+        Set<Corner> edgeStarts = new LinkedHashSet<>();
         for ( Edge e : allEdges )
             for ( Corner c : e.currentCorners )
                 if ( c.nextL == e )
+                	if ( !skel.preserveParallel || EdgeCollision.bisectorsBound( c, loc, skel ) )
                     edgeStarts.add( c );
-
 
         while (!edgeStarts.isEmpty())
         {
@@ -93,11 +93,11 @@ public class CoSitedCollision
             if (c.chain.size() > 1)
                 edgeStarts.addAll( c.chain );
 
-
         Iterator<Chain> chit = chains.iterator();
         while (chit.hasNext())
         {
             Chain chain = chit.next();
+            
             if (chain.chain.size() == 1)
             {
                 // first corner of edge is not necessarily the corner of the edge segment bounding the collision
@@ -160,10 +160,6 @@ public class CoSitedCollision
                  *
                  * It may well break down with lots of adjacent sides.
                  */
-//                broken:(
-                
-//                if ( e.currentCorners.contains( s ) )
-//                    continue; // nothing to see here, move along!
 
                 Corner s = c.chain.get( 0 );
                 Edge e = s.nextL;
@@ -175,7 +171,13 @@ public class CoSitedCollision
                 // project start onto line of collisions above smash edge
                 try
                 {
-                    Tuple3d start = e.linearForm.collide( s.prevL.linearForm, ceiling );
+                	
+                	Tuple3d start;
+                	
+                	if (e.uphill.equals( s.prevL.uphill ))
+                		start = ceiling.collide(e.start, e.uphill);
+                	else
+                		start = e.linearForm.collide( s.prevL.linearForm, ceiling );
 
                     // line defined using collision point, so we're finding the line before 0
                     double targetParam = 0;
@@ -217,7 +219,7 @@ public class CoSitedCollision
         }
 
 
-        Map<Edge, Corner> edgeToCorner = new LinkedHashMap();
+        Map<Edge, Corner> edgeToCorner = new LinkedHashMap<>();
         for (Chain cc : chains)
             for (Corner c : cc.chain)
                 edgeToCorner.put( c.nextL, c);
@@ -226,7 +228,7 @@ public class CoSitedCollision
         // Find valid triples ~ now topology is as it will be before evaluation, we
         // can check that the input edge triplets still have two consecutive edges.
          
-        Set<Edge> validEdges = new LinkedHashSet();
+        Set<Edge> validEdges = new LinkedHashSet<>();
         for (EdgeCollision ec : edges)
         {
             // todo: adjacent pairs may not be parallel!
@@ -246,7 +248,7 @@ public class CoSitedCollision
             }
         }
 
-        List<Chain> chainOrder = new ArrayList ( chains );
+        List<Chain> chainOrder = new ArrayList<>( chains );
 
         // remove parts of chains that aren't a valid triple.
         for (Chain cc : chainOrder)
@@ -420,7 +422,7 @@ public class CoSitedCollision
 
             // except for the first and and last point
             // chain's non-start/end points are always at the position of the collision - so to
-            // find the angle of the first edge at the specified height, we project it's start
+            // find the angle of the first edge at the specified height, we project the edge before start
             // coordinate the desired height and take the angle relative to the collision
             // !could speed up with a chain-class that caches this info!
 
