@@ -47,7 +47,8 @@ import org.twak.utils.geom.LinearForm3D;
  */
 public class Skeleton
 {
-    public Set<Corner> liveCorners = new LinkedHashSet<>();
+    public boolean preserveParallel = false;
+	public Set<Corner> liveCorners = new LinkedHashSet<>();
     public Set<Edge> liveEdges = new LinkedHashSet<>();
     public CollisionQ qu;
     public double height = 0;
@@ -70,7 +71,7 @@ public class Skeleton
     // lazy system for refinding all face events. true so we run it once at start
     boolean refindFaceEvents = true;
 
-    protected Skeleton(){}
+    public Skeleton(){}
 
     public Skeleton (LoopL<Corner> corners)
     {
@@ -154,7 +155,6 @@ public class Skeleton
             List<Corner> corners = allEdges.get( e );
             Corner first = corners.get( 0 );
 
-
             output.newEdge( first.nextL, null, new LinkedHashSet<>() );
 
             // why don't we need this?
@@ -170,8 +170,8 @@ public class Skeleton
 
         for (Corner c : input.eIterator())
         {
-            if (c.z != 0)
-                throw new Error("Corner isn't at zero height");
+            if (c.z != 0 || c.nextL == null || c.prevL == null) // fixme: threading bug with chordatlas under openJDK11 causes npes on nextL?
+                throw new Error("Error in input");
 
             output.newDefiningSegment( c );
             liveCorners.add(c );
@@ -188,7 +188,6 @@ public class Skeleton
 
         // now all angles are set, find initial set of intersections (will remove corners if parallel enough)
         refindFaceEventsIfNeeded();
-
 //        qu.dump(); // debug
     }
 
@@ -220,7 +219,7 @@ public class Skeleton
                 t.printStackTrace();
                 if (t.getCause() != null)
                 {
-                    System.out.println("  caused by:");
+                    System.out.println(" caused by:");
                     t.getCause().printStackTrace();
                 }
             }

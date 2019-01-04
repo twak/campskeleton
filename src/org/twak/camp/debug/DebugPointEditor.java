@@ -127,7 +127,6 @@ public abstract class DebugPointEditor extends PointEditor
             }
         }
 
-
         g2.setStroke( new BasicStroke( 5 ) );
         for (Edge e : highlightEdges.keySet())
         {
@@ -152,14 +151,15 @@ public abstract class DebugPointEditor extends PointEditor
         for ( Loop<Bar> e2 : edges )
             for ( Bar e : e2 )
             {
-                g2.setStroke( new BasicStroke( currentBar == null ? 2f : currentBar.get() == e ? 4f : 2f ) );
-                g2.drawLine( ma.toX( e.start.x ), ma.toY( e.start.y ), ma.toX( e.end.x ), ma.toY( e.end.y ) );
+//                g2.setStroke( new BasicStroke( currentBar == null ? 2f : currentBar.get() == e ? 4f : 2f ) );
+//                g2.drawLine( ma.toX( e.start.x ), ma.toY( e.start.y ), ma.toX( e.end.x ), ma.toY( e.end.y ) );
             }
 
         Map<Point3d, Integer> vCount = new HashMap();
 
-        g2.setColor(Colourz.transparent(Color.red, 140));
-        for (Loop<Corner> loop : corners)
+        int j = 0;
+        for (Loop<Corner> loop : corners) {
+        	g2.setColor(Rainbow.getColour( j++ ));
             for (Loopable<Corner> lc : loop.loopableIterator())
             {
                 Corner c1 = lc.get(), c2 = lc.getNext().get();
@@ -176,6 +176,9 @@ public abstract class DebugPointEditor extends PointEditor
                     vCount.put(new Point3d(c), new Integer ( res+1));
                 }
             }
+        }
+
+        
 
         g2.setColor(Color.black);
         g2.setBackground(Color.orange);

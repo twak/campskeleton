@@ -84,19 +84,7 @@ public class HeightCollision implements HeightEvent
         {
             CoSitedCollision css = cit.next();
 
-//            boolean old = css.oldFindChains( skel );
-//            List<Chain> oC = css.chains;
-            
-            boolean newer = css.findChains( skel );
-            List<Chain> nC = css.chains;
-
-//            if (nC.size() != oC.size())
-//                System.out.println("hello");
-
-//            if (newer!=old)
-//                System.out.println ( old +" + "+newer);
-
-            if ( !newer )
+            if ( !css.findChains( skel ) )
                 cit.remove();
         }
 
@@ -108,6 +96,8 @@ public class HeightCollision implements HeightEvent
         skel.qu.holdRemoves();
 
         cit = coSited.iterator();
+        
+//        int i = 0;
         while (cit.hasNext())
         {
             CoSitedCollision css = cit.next();
@@ -115,6 +105,7 @@ public class HeightCollision implements HeightEvent
             css.validateChains( skel );
             
             changed |= css.processChains( skel );
+//            DebugDevice.dump("chain "+String.format("%4d", ++i ), skel );
         }
 
         skel.qu.resumeRemoves();

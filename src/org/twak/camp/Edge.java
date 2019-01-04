@@ -153,7 +153,12 @@ public class Edge
 
     public boolean isCollisionNearHoriz(Edge other)
     {
-         return Math.abs( linearForm.collide( other.linearForm ).direction.z ) < 0.001;
+    	Ray3d r = linearForm.collide( other.linearForm );
+    	
+    	if (r == null)
+    		return false;
+    	
+         return Math.abs( r.direction.z ) < 0.001;
     }
 
     

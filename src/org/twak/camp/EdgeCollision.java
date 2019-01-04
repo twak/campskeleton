@@ -2,6 +2,7 @@ package org.twak.camp;
 
 
 import javax.vecmath.Point3d;
+import javax.vecmath.Vector3d;
 
 import org.twak.utils.geom.LinearForm3D;
 
@@ -30,7 +31,7 @@ public class EdgeCollision implements HeightEvent
         {
             EdgeCollision other = (EdgeCollision)obj;
 
-            return // if this is a bottleneck we could reject quickly with a hash compare?
+            return 
             (a.equals( other.a ) &&
                         ((b.equals( other.b ) && c.equals( other.c ) ) ||
                          (b.equals( other.c ) && c.equals( other.b ) ) )) ||
@@ -112,11 +113,53 @@ public class EdgeCollision implements HeightEvent
         skel.qu.addCorner( ab, hc ); // we could optimize and move to after having removed from liveEdges? (commented out - above)
 
     }
-
+    
     /**
      * @return the loop corner whose nextL points to the given edge and whose
      * bisectors for the edge contain the collision.
      */
+    public static boolean bisectorsBound (Corner first, Point3d collision, Skeleton skel)
+    {
+        // the two edges that form the bisector with this edge
+        LinearForm3D prev = first.prevL.linearForm; // clone not needed now?
+        LinearForm3D next = first.nextC.nextL.linearForm;
+        
+        double pDist = prev.pointDistance( collision ),
+               nDist = next.pointDistance( collision );
+
+        double prevDot = prev.normal().dot( first.nextL.direction() ),
+               nextDot = next.normal().dot( first.nextL.direction() );
+
+        // depending on if the angle is obtuse or reflex, we'll need to flip the normals
+        // to the convention that a point with a positive plane distance is on the correct side of both bisecting planes
+
+        if ( prevDot < 0 ) // should only be 0 if two edges are parallel!
+            pDist = -pDist;
+        if ( nextDot > 0 )
+            nDist = -nDist;
+        
+        if (first.nextC.nextL.uphill.equals (first.nextL.uphill) )
+        {
+        	Vector3d dir = first.nextL.direction();
+        	dir.normalize();
+        	dir.negate();
+        	next = new LinearForm3D( dir, first.nextC );
+        	nDist = next.pointDistance( collision );
+        }
+        
+        if (first.prevL.uphill.equals (first.nextL.uphill) ) {
+        	Vector3d dir = first.prevL.direction();
+        	dir.normalize();
+        	prev = new LinearForm3D(dir, first );
+        	pDist = prev.pointDistance( collision );
+        }
+        
+        // important constant - must prefer to accept rather than "leak" a collision
+        final double c = -0.0001;
+
+        return pDist >= c && nDist >= c; // a bit of slack!
+    }
+    
     public static Corner findCorner (Edge in, Point3d collision, Skeleton skel)
     {
         for (Corner lc : in.currentCorners)
@@ -126,7 +169,7 @@ public class EdgeCollision implements HeightEvent
                     // the two edges that form the bisector with this edge
                     LinearForm3D prev = lc.prevC.nextL.linearForm.clone(); // clone not needed now?
                     LinearForm3D next = lc.nextC.nextL.linearForm.clone();
-
+                    
                     double pDist = prev.pointDistance( collision ),
                            nDist = next.pointDistance( collision );
 
@@ -140,7 +183,23 @@ public class EdgeCollision implements HeightEvent
                         pDist = -pDist;
                     if ( nextDot > 0 )
                         nDist = -nDist;
-
+                    
+//                    if (lc.nextC.nextL.uphill.equals (in.uphill) )
+//                    {
+//                    	Vector3d dir = in.direction();
+//                    	dir.normalize();
+//                    	dir.negate();
+//                    	next = new LinearForm3D( dir, lc.nextC );
+//                    	nDist = next.pointDistance( collision );
+//                    }
+//                    
+//                    if (lc.prevC.nextL.uphill.equals (in.uphill) ) {
+//                    	Vector3d dir = in.direction();
+//                    	dir.normalize();
+//                    	prev = new LinearForm3D(dir, lc.prevC );
+//                    	pDist = prev.pointDistance( collision );
+//                    }
+                    
                     // important constant - must prefer to accept rather than "leak" a collision
                     final double c = -0.0001;
 

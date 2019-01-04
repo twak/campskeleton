@@ -232,7 +232,7 @@ public class PointEditor extends JComponent
     {
         // to be overridden
     }
-
+   
     public void addBetween( LContext<Bar> ctx, Point l )
     {
         Point2d n = new Point2d( l.x, l.y );
@@ -460,7 +460,7 @@ public class PointEditor extends JComponent
             delta = -delta;
 
         Loop<Bar> circularEdges = new Loop();
-
+        
         Point2d prev = null;
         for (int i = 0; i < count; i++)
         {
@@ -572,7 +572,7 @@ public class PointEditor extends JComponent
                 LContext<Bar> ctx = bit.next();
                 Bar b = ctx.get();
 
-                List<Point2d> pts = new ArrayList( Arrays.asList( new Point2d[]
+                List<Point2d> pts = new ArrayList<>( Arrays.asList( new Point2d[]
                         {
                             b.start, b.end
                         } ) );
