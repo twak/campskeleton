@@ -158,9 +158,7 @@ public class Output
                     
                     e.setLeft (loopable.get(), seloop.append( e ), f );
 				}
-
 			}
-			
 		}
 	}
 	
