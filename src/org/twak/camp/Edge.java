@@ -140,7 +140,7 @@ public class Edge
     }
 
     public double distance( Point3d ept )
-    {
+    {	
         Vector3d e = new Vector3d( end );
         e.sub( start );
         Point3d p = new Ray3d( start, e ).projectSegment( ept );
