@@ -48,10 +48,13 @@ import org.twak.utils.geom.LinearForm3D;
 public class Skeleton
 {
     public boolean preserveParallel = false;
+    public boolean volumeMaximising = true;
 	public Set<Corner> liveCorners = new LinkedHashSet<>();
     public Set<Edge> liveEdges = new LinkedHashSet<>();
     public CollisionQ qu;
     public double height = 0;
+    
+    
 
     // we store the triplets of faces we've already passed out to stop repeats (insensitive to face order)
     public Set<EdgeCollision> seen = new LinkedHashSet<>();
@@ -517,7 +520,6 @@ public class Skeleton
 
     public Comparator<Edge> getHorizontalComparator()
     {
-//        final boolean max = Math.random() > 0.5 ? true : false;
         return new Comparator<Edge>()
         {
             /**
@@ -525,10 +527,10 @@ public class Skeleton
              */
             public int compare( Edge o1, Edge o2 )
             {
-//                if ( max )
+                if ( volumeMaximising )
                     return Double.compare( o1.getAngle(), o2.getAngle() );
-//                else
-//                    return Double.compare( o2.getAngle(), o1.getAngle() );
+                else
+                    return Double.compare( o2.getAngle(), o1.getAngle() );
             }
         };
     }
