@@ -516,7 +516,7 @@ public class Output
         public Loopable<SharedEdge> cLeft, cRight;
         Set <Tag> features = new HashSet<>();
 
-        private SharedEdge( Point3d start, Point3d end )
+        public SharedEdge( Point3d start, Point3d end )
         {
             this.start = start;
             this.end = end;

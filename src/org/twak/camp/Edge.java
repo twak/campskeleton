@@ -20,6 +20,7 @@ import org.twak.utils.collections.Loop;
 import org.twak.utils.collections.LoopL;
 import org.twak.utils.collections.Loopable;
 import org.twak.utils.geom.Ray3d;
+import org.twak.utils.geom.Line3d;
 import org.twak.utils.geom.LinearForm3D;
 
 /**
@@ -381,5 +382,9 @@ public class Edge
                 out.add(c);
         return out;
     }
+
+	public Line3d line() {
+		return new Line3d( start, end );
+	}
 
 }
