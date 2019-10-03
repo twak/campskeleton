@@ -50,14 +50,44 @@
 		</plugins>
 	</build>
 
-	<dependencies>
-	
-		<dependency>
-			<groupId>org.twak.utils</groupId>
-			<artifactId>utils</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+	<profiles>
+		<profile>
+			<id>release</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 
+			<repositories>
+				<repository>
+					<id>jitpack.io</id>
+					<url>https://jitpack.io</url>
+				</repository>
+			</repositories>
+
+			<dependencies>
+				<dependency>
+					<groupId>com.github.twak</groupId>
+					<artifactId>jutils</artifactId>
+					<version>master-SNAPSHOT</version>
+				</dependency>
+			</dependencies>
+
+		</profile>
+		<profile>
+			<id>dev</id>
+
+			<dependencies>
+				<dependency>
+					<groupId>org.twak.utils</groupId>
+					<artifactId>utils</artifactId>
+					<version>0.0.1-SNAPSHOT</version>
+				</dependency>
+			</dependencies>
+
+		</profile>
+	</profiles>
+
+	<dependencies>
 		<dependency>
 			<groupId>javax.vecmath</groupId>
 			<artifactId>vecmath</artifactId>
