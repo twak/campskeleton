@@ -1,24 +1,70 @@
-weighted straight skeleton implementation in java. [video](http://www.youtube.com/watch?v=2twcln3_7Y8).
+[![](https://jitpack.io/v/twak/campskeleton.svg)](https://jitpack.io/#twak/campskeleton)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-allows negative weights for offsetting in either direction. implementation of [Felkel's](http://www.dma.fi.upm.es/mabellanas/tfcs/skeleton/html/documentacion/Straight%20Skeletons%20Implementation.pdf) algo with robustness - described [here](http://twak.blogspot.com/2009/05/engineering-weighted-straight-skeleton.html).
+Weighted straight skeleton implementation in java. [Video](http://www.youtube.com/watch?v=2twcln3_7Y8).
 
-[![](http://farm5.static.flickr.com/4006/4709590538_76e5c9ce6f.jpg)](http://www.flickr.com/photos/twak/4709590538/)
+Allows negative weights for offsetting in either direction. Implementation of [Felkel's](http://www.dma.fi.upm.es/mabellanas/tfcs/skeleton/html/documentacion/Straight%20Skeletons%20Implementation.pdf) algo with robustness - described [here](http://twak.blogspot.com/2009/05/engineering-weighted-straight-skeleton.html).
 
-run the [jar](https://drive.google.com/open?id=0B6r_mUgXfBLdVTRfSE04MzB2Tlk) with
+## Run
+<img src="docs/images/campskeleton.png" style="bottom:0;" width="200" align="right">
+
+Run the [jar](https://drive.google.com/open?id=0B6r_mUgXfBLdVTRfSE04MzB2Tlk) with:
 
 ```
-java -jar siteplan-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+java -jar campskeleton-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 ```
 
-there's a primative gui interface. use left mouse button to move points and control-click to add new points.
+There's a primitive gui interface. Use left mouse button to move points and control-click to add new points.
 
-to build, requires [my jutils](https://github.com/twak/jutils) to be installed (with 'mvn install'). then the command 'mvn package' should build a jar.
+## Build
+To build run the command `mvn install` to install the dependencies. Then the command `mvn package` should build a jar.
 
-main UI class is [org.twak.camp.debug.CampSkeleton](https://github.com/twak/campskeleton/blob/master/src/org/twak/camp/debug/CampSkeleton.java). 
+Use `mvn install -P dev` and `mvn package -P dev` to use development profile (for custom module dependency to [my jutils](https://github.com/twak/jutils)).
 
-[example headless code](https://github.com/twak/campskeleton/blob/wiki/headless.md)
+## Integration
 
-this is a component of a [research project](http://twak.blogspot.com/2011/04/interactive-architectural-modeling-with.html) - if you use it, please cite us:
+### Maven
+Add this to your `pom.xml` to use latest snapshot in your project:
+
+```
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.github.twak</groupId>
+    <artifactId>campskeleton</artifactId>
+    <version>master-SNAPSHOT</version>
+</dependency>
+```
+
+### Gradle
+Add this in your root `build.gradle` at the end of repositories to use latest snapshot:
+
+```
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+dependencies {
+        implementation 'com.github.twak:campskeleton:master-SNAPSHOT'
+}
+```
+
+## Examples
+Main UI class is [org.twak.camp.debug.CampSkeleton](https://github.com/twak/campskeleton/blob/master/src/org/twak/camp/debug/CampSkeleton.java). 
+
+[Example](https://github.com/twak/campskeleton/blob/wiki/headless.md) headless code.
+
+## License
+See [Apache License 2.0](LICENSE.md).
+This is a component of a [research project](http://twak.blogspot.com/2011/04/interactive-architectural-modeling-with.html) - if you use it, please cite us:
 
 <pre>
 @article{kelly2011interactive,

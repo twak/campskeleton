@@ -1,11 +1,19 @@
 /target/
 /bin/
-/.classpath
-*.iml
+/build
 .gradle
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# IntelliJ
+*.iml
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
 /.idea/workspace.xml
+
+# Mac
 .DS_Store
-/build
