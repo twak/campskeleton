@@ -1,5 +1,4 @@
 [![](https://jitpack.io/v/twak/campskeleton.svg)](https://jitpack.io/#twak/campskeleton)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Weighted straight skeleton implementation in java. [Video](http://www.youtube.com/watch?v=2twcln3_7Y8).
 
