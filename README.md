@@ -36,7 +36,7 @@ add this to your `pom.xml` to use latest snapshot in your project:
 <dependency>
     <groupId>com.github.twak</groupId>
     <artifactId>campskeleton</artifactId>
-    <version>master-SNAPSHOT</version>
+    <version>0.0.1</version>
 </dependency>
 ```
 
