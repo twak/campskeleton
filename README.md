@@ -59,7 +59,7 @@ dependencies {
 ## examples
 main UI class is [org.twak.camp.debug.CampSkeleton](https://github.com/twak/campskeleton/blob/master/src/org/twak/camp/debug/CampSkeleton.java). 
 
-[Example](https://github.com/twak/campskeleton/blob/wiki/headless.md) headless code.
+[example](https://github.com/twak/campskeleton/blob/wiki/headless.md) headless code.
 
 ## cite
 this is a component of a [research project](http://twak.blogspot.com/2011/04/interactive-architectural-modeling-with.html) - if you use it, please cite us:
