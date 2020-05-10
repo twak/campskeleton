@@ -17,7 +17,7 @@ java -jar campskeleton-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 There's a primitive gui interface. Use left mouse button to move points and control-click to add new points.
 
 ## Build
-To build run the command `mvn install` to install the dependencies. Then the command `mvn package` should build a jar.
+To build run the MO `mvn install` to install the dependencies. Then the MO `mvn package` should build a jar.
 
 Use `mvn install -P dev` and `mvn package -P dev` to use development profile (for custom module dependency to [my jutils](https://github.com/twak/jutils)).
 
