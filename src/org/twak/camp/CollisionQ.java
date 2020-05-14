@@ -14,6 +14,7 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
 
 import org.twak.camp.debug.DebugDevice;
+import org.twak.utils.geom.LinearForm3D;
 
 /**
  *
@@ -177,7 +178,7 @@ public class CollisionQ
         }
 
         // Horizontal bisectors are rounded up and evaluated before leaving the current height event
-        if ( toAdd.prevL.isCollisionNearHoriz( toAdd.nextL ) )
+        if ( !skel.preserveParallel && toAdd.prevL.isCollisionNearHoriz( toAdd.nextL ) )
         {
             // if not a peak, add as a unsolved horizontal bisector
             if (toAdd.nextL.direction().angle( toAdd.prevL.direction() ) < 0.01 )
@@ -229,7 +230,17 @@ public class CollisionQ
                 // sometimes locks up here if edge.linear form has NaN components.
                 if ( corner.prevL.linearForm.hasNaN() || corner.nextL.linearForm.hasNaN() || edge.linearForm.hasNaN())
                     throw new Error();
-                res =edge.linearForm.collide( corner.prevL.linearForm, corner.nextL.linearForm );
+
+                if (skel.preserveParallel && isParallel( corner.nextL, corner.prevL ) ) {
+
+                    if (edge.start.distance( new Point3d( 56, 25, 27.9 ) ) < 0.5 )
+                        System.out.println("debug");
+
+                    LinearForm3D fake = new LinearForm3D( corner.nextL.direction(), corner );
+                    res = edge.linearForm.collide( fake, corner.prevL.linearForm );
+                }
+                else
+                    res =edge.linearForm.collide( corner.prevL.linearForm, corner.nextL.linearForm ); // default case!
             }
             catch ( Throwable f )
             {

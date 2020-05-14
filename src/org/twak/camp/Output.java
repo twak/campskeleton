@@ -108,7 +108,6 @@ public class Output
                 f.topSE.add( createEdge( a, b ) );
             // just check those tuple's aren't corners....
             f.results.add( new Point3d( a ), new Point3d( b ) );
-//            System.out.println(">>");
         }
     }
 
