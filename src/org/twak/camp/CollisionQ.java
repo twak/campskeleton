@@ -198,7 +198,7 @@ public class CollisionQ
         }
     }
     
-    private static boolean isParallel (Edge a, Edge b) {
+    public static boolean isParallel (Edge a, Edge b) {
     	return a.uphill.angle( b.uphill ) < 0.0001 && a.direction().angle( b.direction() ) < 0.0001;
     }
 

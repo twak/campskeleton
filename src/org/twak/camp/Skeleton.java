@@ -263,8 +263,18 @@ public class Skeleton
                 // don't introduce instabilities if height is already as requested.
                 if (height == c.z )
                     t = new Point3d(c);
-                else
-                    t = ceiling.collide(c.prevL.linearForm, c.nextL.linearForm);
+                else {
+                    if (preserveParallel && CollisionQ.isParallel( c.prevL, c.nextL ))  {
+
+                        Vector3d d = c.nextL.direction();
+                        d.normalize( d );
+                        LinearForm3D parallel = new LinearForm3D( d, c );
+                        t = ceiling.collide( c.prevL.linearForm, parallel );
+                    }
+                    else {
+                        t = ceiling.collide( c.prevL.linearForm, c.nextL.linearForm );
+                    }
+                }
 
                 cornerMap.put(new Corner(t), c);
             } catch (RuntimeException e) {

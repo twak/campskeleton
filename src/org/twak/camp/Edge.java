@@ -162,6 +162,15 @@ public class Edge
          return Math.abs( r.direction.z ) < 0.001;
     }
 
+//    public boolean isParallel(Edge other)
+//    {
+//        Ray3d r = linearForm.collide( other.linearForm );
+//
+//        if (r == null)
+//            return true;
+//
+//        return Math.abs( r.direction.z ) < 0.001;
+//    }
     
     /**
      * Do these two edges go in the same direction and are they coliniear.
