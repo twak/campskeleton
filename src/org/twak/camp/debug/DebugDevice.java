@@ -32,7 +32,7 @@ public class DebugDevice
     public static DebugDevice instance = new DebugDevice();
 
     public static void reset() {
-        debug = true;
+//        debug = true;
         instance.toDisplay.clear();
         instance.push();
     }

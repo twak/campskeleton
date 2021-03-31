@@ -48,7 +48,7 @@ public class CampSkeleton extends javax.swing.JFrame {
         PointEditor pe;
         
 //        pe = new MedialPointEditor();
-        pe = new WeightedPointEditor();
+        pe = new WeightedPointEditorWithHole();
 //        pe = new SkeletonPointEditor();
 //        pe = new PartialOffsetPointEditor();
 //        pe = new OffsetPointEditor();
