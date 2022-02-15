@@ -9,7 +9,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="utils" />
     <orderEntry type="library" name="Maven: javax.vecmath:vecmath:1.5.2" level="project" />
     <orderEntry type="library" name="Maven: gov.nist.math:jama:1.0.3" level="project" />
     <orderEntry type="module" module-name="utils" />
@@ -40,5 +39,7 @@
     <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-script:1.10" level="project" />
     <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-transcoder:1.10" level="project" />
     <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-anim:1.10" level="project" />
+    <orderEntry type="library" name="Maven: org.orbisgis:poly2tri-core:0.1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.0" level="project" />
   </component>
 </module>
