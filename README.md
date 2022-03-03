@@ -7,7 +7,7 @@ allows negative weights for offsetting in either direction. Implementation of [F
 ## run
 <img src="docs/images/campskeleton.png" style="bottom:0;" width="200" align="right">
 
-run the [jar](https://drive.google.com/open?id=0B6r_mUgXfBLdVTRfSE04MzB2Tlk) with:
+run the [jar](https://drive.google.com/file/d/0B6r_mUgXfBLdVTRfSE04MzB2Tlk/view?usp=sharing&resourcekey=0-I42QBip4Jj55Hi9PVz_kqA) with:
 
 ```
 java -jar campskeleton-0.0.1-SNAPSHOT-jar-with-dependencies.jar
