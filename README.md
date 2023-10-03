@@ -1,6 +1,6 @@
 [![](https://jitpack.io/v/twak/campskeleton.svg)](https://jitpack.io/#twak/campskeleton)
 
-weighted straight skeleton implementation in java. [Video](http://www.youtube.com/watch?v=2twcln3_7Y8).
+weighted straight skeleton implementation in java. [video](http://www.youtube.com/watch?v=2twcln3_7Y8).
 
 allows negative weights for offsetting in either direction. Implementation of [Felkel's](http://www.dma.fi.upm.es/mabellanas/tfcs/skeleton/html/documentacion/Straight%20Skeletons%20Implementation.pdf) algo with robustness - described [here](http://twak.blogspot.com/2009/05/engineering-weighted-straight-skeleton.html).
 
