@@ -68,7 +68,7 @@
 				<dependency>
 					<groupId>com.github.twak</groupId>
 					<artifactId>jutils</artifactId>
-					<version>master-SNAPSHOT</version>
+					<version>aa1528ff73</version>
 				</dependency>
 			</dependencies>
 
