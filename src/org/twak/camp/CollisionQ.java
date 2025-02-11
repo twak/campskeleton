@@ -12,9 +12,12 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
+import javax.vecmath.Vector3d;
 
 import org.twak.camp.debug.DebugDevice;
 import org.twak.utils.geom.LinearForm3D;
+
+import net.jafama.FastMath;
 
 /**
  *
@@ -198,9 +201,20 @@ public class CollisionQ
         }
     }
     
-    public static boolean isParallel (Edge a, Edge b) {
-    	return a.uphill.angle( b.uphill ) < 0.0001 && a.direction().angle( b.direction() ) < 0.0001;
-    }
+	static boolean isParallel(Edge a, Edge b) {
+		return angleBetween(a.uphill, b.uphill) < 0.0001 && angleBetween(a.direction(), b.direction()) < 0.0001;
+	}
+
+	private static double angleBetween(Vector3d v1, Vector3d v2) {
+		double vDot = v1.dot(v2);
+		double lenSq1 = v1.lengthSquared();
+		double lenSq2 = v2.lengthSquared();
+
+		// Normalize and clamp vDot
+		vDot = Math.max(-1.0, Math.min(1.0, vDot / Math.sqrt(lenSq1 * lenSq2)));
+
+		return FastMath.acos(vDot);
+	}
 
     private void cornerEdgeCollision( Corner corner, Edge edge )
     {
