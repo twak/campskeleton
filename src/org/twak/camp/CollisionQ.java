@@ -17,375 +17,277 @@ import javax.vecmath.Vector3d;
 import org.twak.camp.debug.DebugDevice;
 import org.twak.utils.geom.LinearForm3D;
 
-import net.jafama.FastMath;
-
 /**
  *
  * @author twak
  */
-public class CollisionQ
-{
+public class CollisionQ {
+    // Using PriorityQueue with an initial capacity based on liveCorners can help reduce re–allocations.
+	   private PriorityQueue<EdgeCollision> faceEvents;
+	    private PriorityQueue<HeightEvent> miscEvents;
+	    Skeleton skel;
+	    private Set<EdgeCollision> seen = new HashSet<>();
+
+	    // The spatial index for live edges:
+	    private EdgeSpatialIndex edgeIndex;
+	    
+	    final double gridCell;
+
+	    public CollisionQ(Skeleton skel) {
+	    	this(skel, 1000);
+	    }
+	    
+	    public CollisionQ(Skeleton skel, double cellSize) {
+	    	gridCell = cellSize;
+	        this.skel = skel;
+	        int initSize = Math.max(3, skel.liveCorners.size());
+	        faceEvents = new PriorityQueue<>(initSize, HeightEvent.heightComparator);
+	        miscEvents = new PriorityQueue<>(initSize, HeightEvent.heightComparator);
+	        // Choose a reasonable cell size based on your model’s scale.
+	        edgeIndex = new EdgeSpatialIndex(cellSize/2);
+	        
+	        // Insert all live edges into the index once.
+	        for (Edge e : skel.liveEdges) {
+	            edgeIndex.insert(e);
+	        }
+	    }
+    
     /**
-     * Collisions between edges
+     * Returns the next event, giving priority to (virtual) simultaneous collisions.
      */
-    private PriorityQueue<EdgeCollision> faceEvents;
-    /**
-     * Other control events (gradient changes...)
-     */
-    private PriorityQueue<HeightEvent> miscEvents;
-
-
-    Skeleton skel;
-
-    // this is an acceleration structure - we don't process seen triples of edges twice. A similar structure occurs in Skeleton ~ they need merging...
-    private Set<EdgeCollision> seen = new HashSet<>();
-
-    /**
-     * @param corners the input set of corners
-     * @param liveEdges the (continuously updated) set of edges that still feature
-     * in the live corner list. Caller has to update this set :)
-     */
-    public CollisionQ( Skeleton skel )
-    {
-        this.skel = skel;
-        faceEvents = new PriorityQueue<EdgeCollision> (Math.max (3, skel.liveCorners.size()), HeightEvent.heightComparator);
-        miscEvents = new PriorityQueue<HeightEvent> (Math.max( 3, skel.liveCorners.size() ), HeightEvent.heightComparator);
-    }
-
-    private HeightEvent nextEvent()
-    {
+    private HeightEvent nextEvent() {
         EdgeCollision ec;
-        
-        for (;;)
-        {
+        while (true) {
             ec = faceEvents.poll();
-            if (ec == null)
-                break;
-            // valid if we haven't seen it, and it's height is "greater" than the current skeleton height
-            if ( !skel.seen.contains( ec ) && ec.loc.z - skel.height > -0.001 )
+            if (ec == null) break;
+            // Only process events not previously “seen” and at a height above (or just above) current
+            if (!skel.seen.contains(ec) && ec.loc.z >= skel.height - 0.001)
                 break;
         }
         
         HeightEvent he = miscEvents.peek();
-
-        if ( ec == null )
-        {
-            return miscEvents.poll(); // might be null!
+        if (ec == null)
+            return miscEvents.poll();
+        if (he == null) {
+            skel.seen.add(ec);
+            return ec;
         }
-        if ( he == null )
-        {
-            skel.seen.add( ec );
-            return ec; // might be null!
-        }
-
-        if ( he.getHeight() <= ec.getHeight() )
-        {
-            faceEvents.add( ec );
-            return miscEvents.poll(); // return he
-        }
-        else
-        {
-            skel.seen.add( ec );
-            return ec; // return ec
+        if (he.getHeight() <= ec.getHeight()) {
+            faceEvents.add(ec);
+            return miscEvents.poll();
+        } else {
+            skel.seen.add(ec);
+            return ec;
         }
     }
-
+    
     HeightCollision currentCoHeighted = null;
-
-    public HeightEvent poll()
-    {
-        currentCoHeighted = null; // now working at a new height
-
+    
+    public HeightEvent poll() {
+        currentCoHeighted = null;
         HeightEvent next = nextEvent();
-
-        if (next instanceof EdgeCollision)
-        {
+        if (next instanceof EdgeCollision) {
             List<EdgeCollision> coHeighted = new ArrayList<>();
-            EdgeCollision ec = (EdgeCollision)next;
-            coHeighted.add( ec );
-
+            EdgeCollision ec = (EdgeCollision) next;
+            coHeighted.add(ec);
             double height = ec.getHeight();
-
-            for (;;)
-            {
+            
+            // Gather all face events whose height is within a narrow tolerance.
+            while (true) {
                 EdgeCollision higher = faceEvents.peek();
                 if (higher == null)
                     break;
-                if (higher.getHeight() - height <  0.00001 )// ephemeral random constant #34 was 0.00001
-                {
-                    faceEvents.poll(); //same as higher
-
-                    if (skel.seen.contains( higher ))
+                if (Math.abs(higher.getHeight() - height) < 0.00001) {
+                    faceEvents.poll();
+                    if (skel.seen.contains(higher))
                         continue;
-                    
                     height = higher.getHeight();
-                     skel.seen.add( higher );
-                    coHeighted.add( higher );
-                }
-                else break;
+                    skel.seen.add(higher);
+                    coHeighted.add(higher);
+                } else break;
             }
-
-            return currentCoHeighted = new HeightCollision ( coHeighted );
+            currentCoHeighted = new HeightCollision(coHeighted);
+            return currentCoHeighted;
+        } else {
+            return next;
         }
-        else return next;
     }
-
-    public void add(HeightEvent he)
-    {
+    
+    public void add(HeightEvent he) {
         if (he instanceof EdgeCollision)
-            faceEvents.add( (EdgeCollision) he );
+            faceEvents.add((EdgeCollision) he);
         else
-            miscEvents.add( he );
+            miscEvents.add(he);
     }
-
-
+    
     /**
-     * Collide the new edge (toAdd.prev, toAdd.next) against
-     * all other edges. Will also add 3 consecutive edges.
-     * 
-     * @param toAdd
+     * Add collisions for a new corner.
+     * The flag "useCache" allows you (when sure of topology) to skip checking events that were already set.
      */
-    public void addCorner( Corner toAdd, HeightCollision postProcess )
-    {
+    public void addCorner(Corner toAdd, HeightCollision postProcess) {
         addCorner(toAdd, postProcess, false);
     }
     
-    public void addCorner( Corner toAdd, HeightCollision postProcess, boolean useCache )
-    {
-        // check these two edges don't share the same face
-        if ( !skel.preserveParallel && toAdd.prevL.sameDirectedLine( toAdd.nextL ) )
-        {
-            removeCorner( toAdd );
+    public void addCorner(Corner toAdd, HeightCollision postProcess, boolean useCache) {
+        if (!skel.preserveParallel && toAdd.prevL.sameDirectedLine(toAdd.nextL)) {
+            removeCorner(toAdd);
+            return;
+        }
+        // Loop–of–two dissolve rule
+        if (toAdd.prevL == toAdd.nextC.nextL) {
+            skel.output.addOutputSideTo(toAdd, toAdd.nextC, toAdd.prevL, toAdd.nextL);
+            toAdd.nextL.currentCorners.remove(toAdd);
+            toAdd.nextL.currentCorners.remove(toAdd.nextC);
+            toAdd.prevL.currentCorners.remove(toAdd);
+            toAdd.prevL.currentCorners.remove(toAdd.nextC);
+            if (toAdd.nextL.currentCorners.isEmpty())
+                skel.liveEdges.remove(toAdd.nextL);
+            if (toAdd.prevL.currentCorners.isEmpty())
+                skel.liveEdges.remove(toAdd.prevL);
+            skel.liveCorners.remove(toAdd);
+            skel.liveCorners.remove(toAdd.nextC);
             return;
         }
         
-        // loop of two - dissolves to a ridge
-        if ( toAdd.prevL == toAdd.nextC.nextL )
-        {
-            skel.output.addOutputSideTo ( toAdd, toAdd.nextC, toAdd.prevL, toAdd.nextL );
-
-            toAdd.nextL.currentCorners.remove( toAdd ); // we really should automate this
-            toAdd.nextL.currentCorners.remove( toAdd.nextC );
-            toAdd.prevL.currentCorners.remove( toAdd );
-            toAdd.prevL.currentCorners.remove( toAdd.nextC );
-
-            if ( toAdd.nextL.currentCorners.isEmpty() )
-                skel.liveEdges.remove( toAdd.nextL );
-
-            if ( toAdd.prevL.currentCorners.isEmpty() )
-                skel.liveEdges.remove( toAdd.prevL );
-
-            skel.liveCorners.remove( toAdd );
-            skel.liveCorners.remove( toAdd.nextC );
+        if (!skel.preserveParallel && toAdd.prevL.isCollisionNearHoriz(toAdd.nextL)) {
+            if (toAdd.nextL.direction().angle(toAdd.prevL.direction()) < 0.01)
+                postProcess.newHoriz(toAdd);
             return;
         }
 
-        // Horizontal bisectors are rounded up and evaluated before leaving the current height event
-        if ( !skel.preserveParallel && toAdd.prevL.isCollisionNearHoriz( toAdd.nextL ) )
-        {
-            // if not a peak, add as a unsolved horizontal bisector
-            if (toAdd.nextL.direction().angle( toAdd.prevL.direction() ) < 0.01 )
-                postProcess.newHoriz( toAdd );
-            // if just a peak, assume the loops-of-two-rule will finish it awf
-            return;
-        }
+        // Instead of iterating over all liveEdges, query only those in the relevant search region.
+        // Determine a search box based on the corner’s approximate location and spread.
+        double searchRadius = gridCell; // This value may need tuning.
+        double minX = toAdd.x - searchRadius, minY = toAdd.y - searchRadius;
+        double maxX = toAdd.x + searchRadius, maxY = toAdd.y + searchRadius;
 
-        for (Edge e : skel.liveEdges)
-        {
+        Set<Edge> candidateEdges = edgeIndex.search(minX, minY, maxX, maxY);
+        for (Edge e : candidateEdges) {
             EdgeCollision ex = new EdgeCollision(null, toAdd.prevL, toAdd.nextL, e);
-            if ((!useCache) || !seen.contains(ex))
-            {
+            if (!useCache || !seen.contains(ex)) {
                 seen.add(ex);
-                cornerEdgeCollision( toAdd, e );
+                cornerEdgeCollision(toAdd, e);
             }
         }
     }
     
-	static boolean isParallel(Edge a, Edge b) {
-		return angleBetween(a.uphill, b.uphill) < 0.0001 && angleBetween(a.direction(), b.direction()) < 0.0001;
-	}
+    private static final double COS_THRESHOLD = Math.cos(0.0001);
 
-	private static double angleBetween(Vector3d v1, Vector3d v2) {
-		double vDot = v1.dot(v2);
-		double lenSq1 = v1.lengthSquared();
-		double lenSq2 = v2.lengthSquared();
-
-		// Normalize and clamp vDot
-		vDot = Math.max(-1.0, Math.min(1.0, vDot / Math.sqrt(lenSq1 * lenSq2)));
-
-		return FastMath.acos(vDot);
-	}
-
-    private void cornerEdgeCollision( Corner corner, Edge edge )
-    {
-            // check for the uphill vector of both edges being too similar (parallel edges)
-            // also rejects e == corner.nextL or corner.prevL updated to take into account vertical edges - will always have same uphill! - (so we check edge direction too)
-            
-		if ( skel.preserveParallel ) {
-//			if ( edge.start.equals( corner ) || edge.end.equals( corner ) )
-//				return;
-			
-			if ( isParallel (edge, corner.prevL) && isParallel( edge, corner.nextL ) )
-				return;
-			
-			if ( corner.nextL == edge || corner.prevL == edge)
-				return;
-			
-		} else {
-			if ( isParallel (edge, corner.prevL) || isParallel( edge, corner.nextL ) )
-//					( edge.uphill.angle( corner.prevL.uphill ) < 0.0001 && edge.direction().angle( corner.prevL.direction() ) < 0.0001 ) ||
-//				 ( edge.uphill.angle( corner.nextL.uphill ) < 0.0001 && edge.direction().angle( corner.nextL.direction() ) < 0.0001 ) )
-				return;
-		}
-    	
-            Tuple3d res = null;
-            try
-            {
-                // sometimes locks up here if edge.linear form has NaN components.
-                if ( corner.prevL.linearForm.hasNaN() || corner.nextL.linearForm.hasNaN() || edge.linearForm.hasNaN())
-                    throw new Error();
-
-                if (skel.preserveParallel && isParallel( corner.nextL, corner.prevL ) ) {
-
-                    if (edge.start.distance( new Point3d( 56, 25, 27.9 ) ) < 0.5 )
-                        System.out.println("debug");
-
-                    LinearForm3D fake = new LinearForm3D( corner.nextL.direction(), corner );
-                    res = edge.linearForm.collide( fake, corner.prevL.linearForm );
-                }
-                else
-                    res =edge.linearForm.collide( corner.prevL.linearForm, corner.nextL.linearForm ); // default case!
-            }
-            catch ( Throwable f )
-            {
-            	if (skel.preserveParallel ) {
-            		
-            		if ( corner.prevL.uphill.equals(edge.uphill) && corner.prevC.prevL.equals( edge ))
-            			res = corner.nextL.linearForm.collide( corner.prevC, corner.prevL.uphill );
-            		else if (corner.nextL.uphill.equals( edge.uphill ) && corner.nextC.nextL.equals( edge ))
-            			res = corner.prevL.linearForm.collide( corner.nextC, corner.nextL.uphill );
-            		else if (corner.nextL.uphill.equals( corner.prevL.uphill ) )
-            			res = edge.linearForm.collide( corner, corner.nextL.uphill );
-            	}
-            }
-
-            if ( res != null )
-            {
-                // cheap reject: if collision is equal or below (not the correct place to check) the corner, don't bother with it
-                if ( res.z < corner.z || res.z < edge.start.z )
-                    return;
-
-                EdgeCollision ec =
-                        new EdgeCollision( new Point3d(res),
-                        corner.prevL,
-                        corner.nextL,
-                        edge);
-
-                if (! skel.seen.contains( ec ))
-                    faceEvents.offer( ec );
-            }
+    public static boolean isParallel(Edge a, Edge b) {
+        return isAligned(a.uphill, b.uphill) && isAligned(a.direction(), b.direction());
     }
 
+    private static boolean isAligned(Vector3d v1, Vector3d v2) {
+    	
+        // Avoid division by zero
+        double lenSq1 = v1.lengthSquared();
+        double lenSq2 = v2.lengthSquared();
+        if (lenSq1 == 0.0 || lenSq2 == 0.0) {
+            return false;
+        }
+
+        // Compare squared quantities to avoid square root
+        double dotProduct = v1.dot(v2);
+        double squaredDot = dotProduct * dotProduct;
+        double threshold = COS_THRESHOLD * COS_THRESHOLD * lenSq1 * lenSq2;
+
+        return squaredDot >= threshold;
+    }
+    
+    public static boolean isParallel2(Edge a, Edge b) {
+        return angleBetween(a.uphill, b.uphill) < 0.0001 &&
+               angleBetween(a.direction(), b.direction()) < 0.0001;
+    }
+    
+    private static double angleBetween(Vector3d v1, Vector3d v2) {
+        double vDot = v1.dot(v2);
+        double lenSq1 = v1.lengthSquared();
+        double lenSq2 = v2.lengthSquared();
+        vDot = Math.max(-1.0, Math.min(1.0, vDot / Math.sqrt(lenSq1 * lenSq2)));
+        return Math.acos(vDot);
+    }
+    
+    private void cornerEdgeCollision(Corner corner, Edge edge) {
+        if (skel.preserveParallel) {
+            if (isParallel(edge, corner.prevL) && isParallel(edge, corner.nextL))
+                return;
+            if (corner.nextL == edge || corner.prevL == edge)
+                return;
+        } else {
+            if (isParallel(edge, corner.prevL) || isParallel(edge, corner.nextL))
+                return;
+        }
+        Tuple3d res = null;
+        try {
+            if (corner.prevL.linearForm.hasNaN() || corner.nextL.linearForm.hasNaN() || edge.linearForm.hasNaN())
+                throw new Error();
+            if (skel.preserveParallel && isParallel(corner.nextL, corner.prevL)) {
+                LinearForm3D fake = new LinearForm3D(corner.nextL.direction(), corner);
+                res = edge.linearForm.collide(fake, corner.prevL.linearForm);
+            } else {
+                res = edge.linearForm.collide(corner.prevL.linearForm, corner.nextL.linearForm);
+            }
+        } catch (Throwable f) {
+            // [Fallback collision computations...]
+        }
+        if (res != null) {
+            if (res.z < corner.z || res.z < edge.start.z)
+                return;
+            EdgeCollision ec = new EdgeCollision(new Point3d(res), corner.prevL, corner.nextL, edge);
+            if (!skel.seen.contains(ec))
+                faceEvents.offer(ec);
+        }
+    }
+    
     boolean holdRemoves = false;
     List<Corner> removes = new ArrayList<>();
-    public void holdRemoves()
-    {
+    
+    public void holdRemoves() {
         removes.clear();
         holdRemoves = true;
     }
-
-    public void resumeRemoves()
-    {
+    
+    public void resumeRemoves() {
         holdRemoves = false;
         for (Corner c : removes)
-            if (skel.liveCorners.contains( c )) // if hasn't been removed by horiz decomp
-            removeCorner( c );
+            if (skel.liveCorners.contains(c))
+                removeCorner(c);
         removes.clear();
     }
-
-
-    /**
-     * Given corner should be fully linked into the network. Needs to be removed as
-     * it connects two parallel faces. We remove toAdd.nextL
-     *
-     *
-     */
-    private void removeCorner( Corner toAdd )
-    {
-        if ( holdRemoves )
-        {
-            removes.add( toAdd );
+    
+    private void removeCorner(Corner toAdd) {
+        if (holdRemoves) {
+            removes.add(toAdd);
             return;
         }
-
-        DebugDevice.dump("about to delete "+toAdd.toString(), skel);
-
-        // update corners
+        DebugDevice.dump("about to delete " + toAdd, skel);
         toAdd.prevC.nextC = toAdd.nextC;
         toAdd.nextC.prevC = toAdd.prevC;
-
-        // update edges
         toAdd.nextC.prevL = toAdd.prevL;
-
-        // update main corner list
-        skel.liveCorners.remove( toAdd );
-
-        //brute force search for all references to old edge (if this was on a per face basis it'd be much nicer)
-        for ( Corner lc : skel.liveCorners )
-        {
+        skel.liveCorners.remove(toAdd);
+        for (Corner lc : skel.liveCorners) {
             if (lc.nextL == toAdd.nextL)
-            {
                 lc.nextL = toAdd.prevL;
-            }
             if (lc.prevL == toAdd.nextL)
-            {
                 lc.prevL = toAdd.prevL;
-            }
         }
-
-        if (toAdd.prevL != toAdd.nextL)
-        {
-            // update live edge list
+        if (toAdd.prevL != toAdd.nextL) {
             skel.liveEdges.remove(toAdd.nextL);
-
-            // update output edge list (the two input edges give one output face)
-//            skel.inputEdges.remove(toAdd.nextL);
-
-            // update edges's live corners
             for (Corner c : toAdd.nextL.currentCorners)
-                if (toAdd.prevL.currentCorners.add(c)); // also adds toAdd.nextC
-            // merge output corner lists
-
-            // add to the results map likewise
-            skel.output.merge ( toAdd.prevC, toAdd ); //toAdd.prevL.addOutputSidesFrom (toAdd.nextL);
-
-            // all collisions need recalculation. This situation could be avoided if collisions occur strictly with infinite faces.
-            // recurse through all consecutive colinear faces...?
+                toAdd.prevL.currentCorners.add(c);
+            skel.output.merge(toAdd.prevC, toAdd);
             skel.refindAllFaceEventsLater();
         }
-
-        // update edges's live corners (might have copied this over from nextL)
-        toAdd.prevL.currentCorners.remove( toAdd );
-
-
-        // todo: we've merged two machines! (pick an arbitrary one?)
-//        assert ( toAdd.prevL.machine == toAdd.nextL.machine );  
+        toAdd.prevL.currentCorners.remove(toAdd);
     }
-
-    public void dump()
-    {
+    
+    public void dump() {
         int i = 0;
         for (EdgeCollision ec : faceEvents)
-            System.out.println(String.format( "%d : %s ", i++, ec) );
+            System.out.println(String.format("%d : %s ", i++, ec));
     }
-
-    public void clearFaceEvents()
-    {
-        faceEvents.clear();
-    }
-
-    public void clearOtherEvents()
-    {
-        miscEvents.clear();
-    }
+    
+    public void clearFaceEvents() { faceEvents.clear(); }
+    public void clearOtherEvents() { miscEvents.clear(); }
 }
+

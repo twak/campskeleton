@@ -93,6 +93,14 @@ public class Edge
         uphill = vec;
     }
     
+    public double[] getBBox() {
+        double minX = Math.min(start.x, end.x);
+        double minY = Math.min(start.y, end.y);
+        double maxX = Math.max(start.x, end.x);
+        double maxY = Math.max(start.y, end.y);
+        return new double[]{minX, minY, maxX, maxY};
+    }
+    
     /**
      * finds the Ax + By + Cz = D form of the edge
      * Called when the the weight of the edge changes
@@ -122,12 +130,10 @@ public class Edge
     	return start.distance( end );
     }
     
-    public Vector3d direction()
-    {
-        Vector3d vec = new Vector3d ( this.end.x, this.end.y, 0 );
-        vec.sub( new Vector3d ( this.start.x, this.start.y, 0 ));
-        return vec;
+    public Vector3d direction() {
+        return new Vector3d(end.x - start.x, end.y - start.y, 0);
     }
+
 
     public Line projectDown()
     {
