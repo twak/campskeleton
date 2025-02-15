@@ -150,7 +150,7 @@ public class CollisionQ {
 		}
 
 		if (!skel.preserveParallel && toAdd.prevL.isCollisionNearHoriz(toAdd.nextL)) {
-			if (angleBetween(toAdd.nextL.direction(), toAdd.prevL.direction()) < 0.01) {
+			if (isParallel(toAdd.nextL, toAdd.prevL)) {
 				postProcess.newHoriz(toAdd);
 			}
 			return;
@@ -175,7 +175,6 @@ public class CollisionQ {
 	}
 
 	private static final double COS_THRESHOLD = Math.cos(0.0001);
-
 	static boolean isParallel(Edge a, Edge b) {
 		return isAligned(a.uphill, b.uphill) && isAligned(a.direction(), b.direction());
 	}
@@ -195,18 +194,6 @@ public class CollisionQ {
 		double threshold = COS_THRESHOLD * COS_THRESHOLD * lenSq1 * lenSq2;
 
 		return squaredDot >= threshold;
-	}
-
-	static boolean isParallel2(Edge a, Edge b) { // old slower method
-		return angleBetween(a.uphill, b.uphill) < 0.0001 && angleBetween(a.direction(), b.direction()) < 0.0001;
-	}
-
-	private static double angleBetween(Vector3d v1, Vector3d v2) {
-		double vDot = v1.dot(v2);
-		double lenSq1 = v1.lengthSquared();
-		double lenSq2 = v2.lengthSquared();
-		vDot = Math.max(-1.0, Math.min(1.0, vDot / Math.sqrt(lenSq1 * lenSq2)));
-		return Math.acos(vDot);
 	}
 
 	private void cornerEdgeCollision(Corner corner, Edge edge) {
