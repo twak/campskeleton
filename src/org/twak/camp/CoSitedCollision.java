@@ -2,8 +2,10 @@
 package org.twak.camp;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -27,7 +29,7 @@ import org.twak.utils.geom.LinearForm3D;
  */
 public class CoSitedCollision
 {
-    public Set<EdgeCollision> edges = new LinkedHashSet();
+    public Collection<EdgeCollision> edges = new ArrayList<>(10);
     public Point3d loc;
 
     public boolean debugHoriz = false;
@@ -45,7 +47,7 @@ public class CoSitedCollision
 
     public void add(EdgeCollision ec)
     {
-        edges.add( ec );
+    	edges.add(ec);
     }
 
     /**
@@ -54,10 +56,10 @@ public class CoSitedCollision
      */
     public boolean findChains ( Skeleton skel )
     {
-        chains = new ArrayList();
+        chains = new ArrayList<>();
         
         // remove duplicate edges
-        Set<Edge> allEdges = new LinkedHashSet();
+        Set<Edge> allEdges = new HashSet<>();
         for (EdgeCollision ec : edges)
         {
             allEdges.add( ec.a );
@@ -124,7 +126,7 @@ public class CoSitedCollision
     }
 
     /**
-     * If another collision has been evaluated at teh same height, this method
+     * If another collision has been evaluated at the same height, this method
      * checks for any changes in the Corners involved in a skeleton. This is a problem
      * when several collisions at the same height occur against one smash edge.
      *

@@ -1,11 +1,11 @@
 
 package org.twak.camp;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
@@ -42,12 +42,12 @@ public class Edge
     public LinearForm3D linearForm;
     
     // corners that currently reference this edge in prevL or nextL
-    public Set<Corner> currentCorners = new LinkedHashSet();
+    public List<Corner> currentCorners = new ArrayList<>();
 
     public Machine machine;
 
     // features that this edge has been tagged with
-    public Set<Tag> profileFeatures = new LinkedHashSet();
+    public Set<Tag> profileFeatures = new LinkedHashSet<Tag>();
 
 
     public Edge (Corner start, Corner end, double angle)
@@ -76,21 +76,21 @@ public class Edge
     /**
      * The perpendicular unit vector pointing up the slope of the side
      */
-    private void calculateUphill()
-    {
-        Vector3d vec = direction();
+    private void calculateUphill() {
+        // Compute the horizontal direction components directly
+        double dx = end.x - start.x;
+        double dy = end.y - start.y;
+        // Compute the inverse length (normalization factor)
+        double normInv = 1.0 / Math.sqrt(dx * dx + dy * dy);
         
-        // perpendicular in x,y plane
-        vec = new Vector3d ( -vec.y, vec.x, 0 );
-        vec.normalize();
-
-        // horizontal component
-        vec.scale( Math.sin(getAngle()) );
-
-        // vertical component
-        vec.add( new Vector3d (0,0,Math.cos( getAngle()) ) );
+        double sinA = Math.sin(angle);
+        double cosA = Math.cos(angle);
         
-        uphill = vec;
+        // The perpendicular (in x,y) of (dx, dy) normalized is (-dy/length, dx/length).
+        // Multiply by sin(angle) and add vertical component cos(angle)
+        uphill = new Vector3d(-dy * sinA * normInv,
+                              dx * sinA * normInv,
+                              cosA);
     }
     
     public double[] getBBox() {

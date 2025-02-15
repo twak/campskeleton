@@ -34,7 +34,7 @@ public class Skeleton {
 	
     public boolean preserveParallel = false;
     public boolean volumeMaximising = true;
-    public Set<Corner> liveCorners = new HashSet<>();  // order not essential in production
+    public Set<Corner> liveCorners = new HashSet<>();
     public Set<Edge> liveEdges = new HashSet<>();
     public CollisionQ qu;
     public double height = 0;
@@ -66,13 +66,13 @@ public class Skeleton {
         setup(corners);
     }
     
-    double cellSize = Double.MAX_VALUE;
+    private int edgeNearestNeighbors = Integer.MAX_VALUE;
     
     /**
      * Deprecated – given a loop of edges convert to corners.
      */
-	public Skeleton(LoopL<Edge> input, double cellSize) {
-		this.cellSize = cellSize;
+	public Skeleton(LoopL<Edge> input, int edgeNearestNeighbors) {
+		this.edgeNearestNeighbors = edgeNearestNeighbors;
 		setupForEdges(input);
 	}
 
@@ -85,10 +85,10 @@ public class Skeleton {
 		capAt(cap);
     }
     
-//    public Skeleton(LoopL<Edge> input, final double cap) {
-//        setupForEdges(input);
-//        capAt(cap);
-//    }
+    public Skeleton(LoopL<Edge> input, final double cap) {
+        setupForEdges(input);
+        capAt(cap);
+    }
     
     /**
      * Converts loops of edges (BAD!) to loops of corners (GOOD!)
@@ -154,7 +154,7 @@ public class Skeleton {
             c.prevL.currentCorners.add(c);
         }
         
-        qu = new CollisionQ(this, cellSize);
+        qu = new CollisionQ(this, edgeNearestNeighbors);
         
         // Add edges to their machines (accelerated structure)
         for (Edge e : allEdges.keySet()) {
@@ -266,7 +266,6 @@ public class Skeleton {
     }
     
     public void parent(Face child, Face parent) {
-        // override me if needed
     }
     
     public static class SEC {
