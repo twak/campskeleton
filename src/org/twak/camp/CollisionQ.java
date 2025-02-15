@@ -150,7 +150,7 @@ public class CollisionQ {
 		}
 
 		if (!skel.preserveParallel && toAdd.prevL.isCollisionNearHoriz(toAdd.nextL)) {
-			if (isParallel(toAdd.nextL, toAdd.prevL)) {
+			if (toAdd.nextL.isParallel(toAdd.prevL)) {
 				postProcess.newHoriz(toAdd);
 			}
 			return;
@@ -174,43 +174,21 @@ public class CollisionQ {
 		}
 	}
 
-	private static final double COS_THRESHOLD = Math.cos(0.0001);
-	static boolean isParallel(Edge a, Edge b) {
-		return isAligned(a.uphill, b.uphill) && isAligned(a.direction(), b.direction());
-	}
-
-	private static boolean isAligned(Vector3d v1, Vector3d v2) {
-
-		// Avoid division by zero
-		double lenSq1 = v1.lengthSquared();
-		double lenSq2 = v2.lengthSquared();
-		if (lenSq1 == 0.0 || lenSq2 == 0.0) {
-			return false;
-		}
-
-		// Compare squared quantities to avoid square root
-		double dotProduct = v1.dot(v2);
-		double squaredDot = dotProduct * dotProduct;
-		double threshold = COS_THRESHOLD * COS_THRESHOLD * lenSq1 * lenSq2;
-
-		return squaredDot >= threshold;
-	}
-
 	private void cornerEdgeCollision(Corner corner, Edge edge) {
 		if (skel.preserveParallel) {
-			if (isParallel(edge, corner.prevL) && isParallel(edge, corner.nextL))
-				return;
+			if (edge.isParallel(corner.prevL) && edge.isParallel(corner.nextL))
+			    return;
 			if (corner.nextL == edge || corner.prevL == edge)
-				return;
-		} else {
-			if (isParallel(edge, corner.prevL) || isParallel(edge, corner.nextL))
-				return;
-		}
+			    return;
+			} else {
+			    if (edge.isParallel(corner.prevL) || edge.isParallel(corner.nextL))
+			        return;
+			}
 		Tuple3d res = null;
 		try {
 			if (corner.prevL.linearForm.hasNaN() || corner.nextL.linearForm.hasNaN() || edge.linearForm.hasNaN())
 				throw new Error();
-			if (skel.preserveParallel && isParallel(corner.nextL, corner.prevL)) {
+			if (skel.preserveParallel && corner.nextL.isParallel(corner.prevL)) {
 				LinearForm3D fake = new LinearForm3D(corner.nextL.direction(), corner);
 				res = edge.linearForm.collide(fake, corner.prevL.linearForm);
 			} else {

@@ -74,6 +74,7 @@ public class Skeleton
     // lazy system for refinding all face events. true so we run it once at start
     boolean refindFaceEvents = true;
     
+    // number of nearest edges considered for corner-edge collision
     private int edgeNearestNeighbors = Integer.MAX_VALUE;
 
 	/**
@@ -273,7 +274,7 @@ public class Skeleton
                 if (height == c.z )
                     t = new Point3d(c);
                 else {
-                    if (preserveParallel && CollisionQ.isParallel( c.prevL, c.nextL ))  {
+                    if (preserveParallel && c.prevL.isParallel( c.nextL ))  {
 
                         Vector3d d = c.nextL.direction();
                         d.normalize( d );
