@@ -2,19 +2,21 @@
 package org.twak.camp;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import javax.vecmath.Tuple3d;
 
-import org.twak.camp.debug.DebugDevice;
+import org.tinspin.index.Index.PointEntryKnn;
+import org.tinspin.index.Index.PointIteratorKnn;
+import org.tinspin.index.PointMap;
+import org.tinspin.index.kdtree.KDTree;
 import org.twak.utils.Pair;
 import org.twak.utils.collections.CloneConfirmIterator;
 import org.twak.utils.collections.ConsecutivePairs;
-import org.twak.utils.geom.LinearForm3D;
 
 /**
  * A bunch of faces that collide at the same height
@@ -42,77 +44,68 @@ public class HeightCollision implements HeightEvent
         return height;
     }
 
-    /**
-     * This is a bit of quest!
-     *
-     * Assumption is that there are no parallel edges creating horizontal bisectors
-     * in the current loops. We create some here, then process them all, again removing
-     * all horizontal bisectors from the current loops.
-     *
-     * @return true if topology has changed, false (we ignored all events)
-     */
-
-    public boolean process( Skeleton skel )
-    {
-        boolean changed = false;
-
-        List<CoSitedCollision> coSited = new ArrayList();
-
-        // I love the smell of O(n^2) in the morning
-        ec:
-        for (EdgeCollision ec : coHeighted) 
-        {
-            for (CoSitedCollision csc : coSited)
-            {
-                if ( ec.loc.distance( csc.loc ) < 0.01 )
-                {
-                    csc.add( ec );
-                    continue ec;
-                }
-            }
-            coSited.add( new CoSitedCollision( ec.loc, ec, this ));
+	/**
+	 * This is a bit of quest!
+	 * <p>
+	 * Processes collisions occurring at the same height to update the topology of
+	 * the given skeleton.
+	 * <p>
+	 * Assumption is that there are no parallel edges creating horizontal bisectors
+	 * in the current loops. We create some here, then process them all, again
+	 * removing all horizontal bisectors from the current loops.
+	 *
+	 * @return true if topology has changed; false otherwise (we ignored all events)
+	 */
+	public boolean process(Skeleton skel) {
+		if (coHeighted.isEmpty()) {
+			processHoriz(skel);
+            return false;
         }
-
-        /**
-         * todo: This is a two-step process, for (I suspect) historical
-         * reasons. It should be possible to find the chains as we
-         * go using line-projection.
-         */
-        Iterator <CoSitedCollision> cit = coSited.iterator();
-
-        while (cit.hasNext())
-        {
-            CoSitedCollision css = cit.next();
-
-            if ( !css.findChains( skel ) )
-                cit.remove();
-        }
-
-        /**
-         * We don't remove any points as it merges faces. All the
-         * information (chains etc..) contains references to the
-         * faces that we don't want destroyed as the faces merge.
-         */
-        skel.qu.holdRemoves();
-
-        cit = coSited.iterator();
         
-//        int i = 0;
-        while (cit.hasNext())
-        {
-            CoSitedCollision css = cit.next();
+        boolean changed = false;
+        
+        PointMap<CoSitedCollision> kdTree = KDTree.create(2);
+        final double tolerance = 0.01;
+        
+        // coSited will store collisions that were not merged
+        List<CoSitedCollision> coSited = new ArrayList<>();
+        
+        // Use the first collision to seed the kd-tree
+        EdgeCollision first = coHeighted.get(0);
+        double[] firstPoint = { first.loc.x, first.loc.y };
+        CoSitedCollision firstCollision = new CoSitedCollision(first.loc, first, this);
+        kdTree.insert(firstPoint, firstCollision);
+        coSited.add(firstCollision);
+        
+        // Process remaining collisions
+        int len = coHeighted.size();
+        for (int i = 1; i < len; i++) {
+            EdgeCollision ec = coHeighted.get(i);
+            double[] qp = { ec.loc.x, ec.loc.y };
             
-            css.validateChains( skel );
-            
-            changed |= css.processChains( skel );
-//            DebugDevice.dump("chain "+String.format("%4d", ++i ), skel );
+            // Query the KD-Tree for the nearest neighbor
+            PointEntryKnn<CoSitedCollision> nearest = kdTree.query1nn(qp);
+            if (nearest.dist() < tolerance) {
+                nearest.value().add(ec);
+            } else {
+                CoSitedCollision newCollision = new CoSitedCollision(ec.loc, ec, this);
+                kdTree.insert(qp, newCollision);
+                coSited.add(newCollision);
+            }
         }
-
+        
+        // Step 1: Remove collisions that fail the chain finding
+        coSited.removeIf(css -> !css.findChains(skel));
+        
+        // Step 2: Process remaining chains
+        skel.qu.holdRemoves();
+        for (CoSitedCollision css : coSited) {
+            css.validateChains(skel);
+            changed |= css.processChains(skel);
+        }
         skel.qu.resumeRemoves();
-
-        processHoriz( skel );
-//         DebugDevice.dump("hc, tmp "+height, skel);
-
+        
+        processHoriz(skel);
         return changed;
     }
     

@@ -73,7 +73,13 @@ public class Skeleton
 
     // lazy system for refinding all face events. true so we run it once at start
     boolean refindFaceEvents = true;
+    
+    // number of nearest edges considered for corner-edge collision
+    private int edgeNearestNeighbors = Integer.MAX_VALUE;
 
+	/**
+	 * Deprecated – given a loop of edges convert to corners.
+	 */
     public Skeleton(){}
 
     public Skeleton (LoopL<Corner> corners)
@@ -89,7 +95,34 @@ public class Skeleton
     {
         setupForEdges(input);
     }
-
+    
+	/**
+	 * Creates a skeleton that uses a spatial index to optimise collision detection
+	 * between corners and edges. Instead of checking all edges for collisions, the
+	 * spatial index limits the search to a subset of nearby edges, which can
+	 * significantly improve performance. This optimisation is particularly useful
+	 * for large inputs, but its robustness depends on the input geometry and the
+	 * chosen number of nearest neighbors.
+	 * <p>
+	 * The spatial index reduces the number of edge checks, but it does not
+	 * guarantee completeness. If too few neighbors are considered, collisions may
+	 * be missed, leading to incorrect or broken output. The optimal number of
+	 * neighbors varies depending on the input: highly concave shapes may work with
+	 * fewer neighbors (as low as 8), while more complex or irregular shapes may
+	 * require a higher number to ensure accurate results.
+	 * 
+	 * @param input                The input loop of edges that define the skeleton.
+	 * @param edgeNearestNeighbors The number of nearest neighboring edges to
+	 *                             consider when searching for collisions using the
+	 *                             spatial index. This parameter balances
+	 *                             performance and correctness: too few neighbors
+	 *                             may miss collisions, while too many may reduce
+	 *                             the performance benefits of the spatial index.
+	 */
+	public Skeleton(LoopL<Edge> input, int edgeNearestNeighbors) {
+		this.edgeNearestNeighbors = edgeNearestNeighbors;
+		setupForEdges(input);
+	}
 
     /**
      * @param cap height (flat-topped skeleton) to finish at
@@ -182,7 +215,7 @@ public class Skeleton
             c.prevL.currentCorners.add(c);
         }
 
-        qu = new CollisionQ( this ); // yay closely coupled classes
+        qu = new CollisionQ( this, edgeNearestNeighbors ); // yay closely coupled classes
 
         for ( Edge e : allEdges.keySet() )
         {
@@ -264,7 +297,7 @@ public class Skeleton
                 if (height == c.z )
                     t = new Point3d(c);
                 else {
-                    if (preserveParallel && CollisionQ.isParallel( c.prevL, c.nextL ))  {
+                    if (preserveParallel && c.prevL.isParallel( c.nextL ))  {
 
                         Vector3d d = c.nextL.direction();
                         d.normalize( d );

@@ -55,9 +55,9 @@ public class EdgeCollision implements HeightEvent
     public int hashCode()
     {
         int hash = 3;
-        hash += ( this.a != null ? this.a.hashCode() : 0 );
-        hash += ( this.b != null ? this.b.hashCode() : 0 );
-        hash += ( this.c != null ? this.c.hashCode() : 0 );
+        hash+=this.a.hashCode();
+        hash+=this.b.hashCode();
+        hash+=this.c.hashCode();
         return hash * 31;
     }
 

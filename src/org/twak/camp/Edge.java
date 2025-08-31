@@ -1,11 +1,11 @@
 
 package org.twak.camp;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
@@ -32,6 +32,10 @@ import org.twak.utils.geom.LinearForm3D;
  */
 public class Edge
 {
+	
+	private static final double COLLINEAR_THRESHOLD = 0.01; // angle in radians
+	private static final double COS_THRESHOLD = Math.cos(COLLINEAR_THRESHOLD*COLLINEAR_THRESHOLD);
+	
     public Corner start, end;
 
     // 0 is straight up, positive/-ve is inwards/outwards, absolute value must be less than Math.PI/2
@@ -42,12 +46,12 @@ public class Edge
     public LinearForm3D linearForm;
     
     // corners that currently reference this edge in prevL or nextL
-    public Set<Corner> currentCorners = new LinkedHashSet();
+    public List<Corner> currentCorners = new ArrayList<>();
 
     public Machine machine;
 
     // features that this edge has been tagged with
-    public Set<Tag> profileFeatures = new LinkedHashSet();
+    public Set<Tag> profileFeatures = new LinkedHashSet<Tag>();
 
 
     public Edge (Corner start, Corner end, double angle)
@@ -76,21 +80,29 @@ public class Edge
     /**
      * The perpendicular unit vector pointing up the slope of the side
      */
-    private void calculateUphill()
-    {
-        Vector3d vec = direction();
+    private void calculateUphill() {
+        // Compute the horizontal direction components directly
+        double dx = end.x - start.x;
+        double dy = end.y - start.y;
+        // Compute the inverse length (normalization factor)
+        double normInv = 1.0 / Math.sqrt(dx * dx + dy * dy);
         
-        // perpendicular in x,y plane
-        vec = new Vector3d ( -vec.y, vec.x, 0 );
-        vec.normalize();
-
-        // horizontal component
-        vec.scale( Math.sin(getAngle()) );
-
-        // vertical component
-        vec.add( new Vector3d (0,0,Math.cos( getAngle()) ) );
+        double sinA = Math.sin(angle);
+        double cosA = Math.cos(angle);
         
-        uphill = vec;
+        // The perpendicular (in x,y) of (dx, dy) normalized is (-dy/length, dx/length).
+        // Multiply by sin(angle) and add vertical component cos(angle)
+        uphill = new Vector3d(-dy * sinA * normInv,
+                              dx * sinA * normInv,
+                              cosA);
+    }
+    
+    public double[] getBBox() {
+        double minX = Math.min(start.x, end.x);
+        double minY = Math.min(start.y, end.y);
+        double maxX = Math.max(start.x, end.x);
+        double maxY = Math.max(start.y, end.y);
+        return new double[]{minX, minY, maxX, maxY};
     }
     
     /**
@@ -122,12 +134,10 @@ public class Edge
     	return start.distance( end );
     }
     
-    public Vector3d direction()
-    {
-        Vector3d vec = new Vector3d ( this.end.x, this.end.y, 0 );
-        vec.sub( new Vector3d ( this.start.x, this.start.y, 0 ));
-        return vec;
+    public Vector3d direction() {
+        return new Vector3d(end.x - start.x, end.y - start.y, 0);
     }
+
 
     public Line projectDown()
     {
@@ -154,31 +164,84 @@ public class Edge
 
     public boolean isCollisionNearHoriz(Edge other)
     {
-    	Ray3d r = linearForm.collide( other.linearForm );
+    	Ray3d r = collide( other.linearForm );
     	
     	if (r == null)
     		return false;
     	
          return Math.abs( r.direction.z ) < 0.001;
     }
+    
+    private Ray3d collide(LinearForm3D other) {
+        // Plane 1: A*x + B*y + C*z + D = 0, so d1 = -D, n1 = (A, B, C)
+        // Plane 2: other.A*x + other.B*y + other.C*z + other.D = 0, so d2 = -other.D, n2 = (other.A, other.B, other.C)
+        double n1x = linearForm.A, n1y = linearForm.B, n1z = linearForm.C;
+        double n2x = other.A, n2y = other.B, n2z = other.C;
+        
+        // Compute the cross product: r = n1 x n2, the direction of the intersection line.
+        double rx = n1y * n2z - n1z * n2y;
+        double ry = n1z * n2x - n1x * n2z;
+        double rz = n1x * n2y - n1y * n2x;
+        
+        // If the two plane normals are (nearly) parallel, then r will be near 0.
+        double rnormSq = rx * rx + ry * ry + rz * rz;
+        if (rnormSq == 0) {
+            return null;
+        }
+        
+        // Compute d1 and d2 from the plane equations.
+        double d1 = -linearForm.D;
+        double d2 = -other.D;
+        
+        // Compute the vector w = d1*n2 - d2*n1.
+        double wx = d1 * n2x - d2 * n1x;
+        double wy = d1 * n2y - d2 * n1y;
+        double wz = d1 * n2z - d2 * n1z;
+        
+        // Now compute the particular solution point p = w x r / ||r||².
+        double px = wy * rz - wz * ry;
+        double py = wz * rx - wx * rz;
+        double pz = wx * ry - wy * rx;
+        
+        double invRnormSq = 1.0 / rnormSq;
+        px *= invRnormSq;
+        py *= invRnormSq;
+        pz *= invRnormSq;
+        
+        Point3d point = new Point3d(px, py, pz);
+        Vector3d direction = new Vector3d(rx, ry, rz);
+        return new Ray3d(point, direction);
+    }
 
-//    public boolean isParallel(Edge other)
-//    {
-//        Ray3d r = linearForm.collide( other.linearForm );
-//
-//        if (r == null)
-//            return true;
-//
-//        return Math.abs( r.direction.z ) < 0.001;
-//    }
+
+	public boolean isParallel(Edge other) {
+		return isAligned(uphill, other.uphill) && isAligned(direction(), other.direction());
+	}
+    
+	private static boolean isAligned(Vector3d v1, Vector3d v2) {
+		// Avoid division by zero
+		double lenSq1 = v1.lengthSquared();
+		double lenSq2 = v2.lengthSquared();
+		if (lenSq1 == 0.0 || lenSq2 == 0.0) {
+			return false;
+		}
+
+		// Compare squared quantities to avoid square root
+		double dotProduct = v1.dot(v2);
+		double squaredDot = dotProduct * dotProduct;
+		double threshold = COS_THRESHOLD * COS_THRESHOLD * lenSq1 * lenSq2;
+
+		return squaredDot >= threshold;
+	}
     
     /**
-     * Do these two edges go in the same direction and are they coliniear.
+     * Do these two edges go in the same direction and are they collinear?
      * (Are they parallel and go through the same point?)
      */
     public boolean sameDirectedLine( Edge nextL )
     {
-        return nextL.direction().angle( direction() ) < 0.01 && Math.abs( getAngle() - nextL.getAngle() ) < 0.01;
+    	return nextL.direction().angle( direction() ) < COLLINEAR_THRESHOLD && 
+    			Math.abs( getAngle() - nextL.getAngle() ) < COLLINEAR_THRESHOLD;
     }
 
     /**
@@ -349,11 +412,6 @@ public class Edge
     public static Tuple3d collide (Corner a, double height)
     {
         LinearForm3D ceiling = new LinearForm3D( 0, 0, 1, -height );
-
-        // this can cause Jama not to return...
-        if ( a.prevL.linearForm.hasNaN() || a.nextL.linearForm.hasNaN() )
-                    throw new Error();
-
             try {
                 return ceiling.collide(a.prevL.linearForm, a.nextL.linearForm);
             } catch (RuntimeException e) {
